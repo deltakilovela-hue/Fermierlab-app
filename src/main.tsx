@@ -6,7 +6,7 @@ import App from './App.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ClerkProvider afterSignOutUrl="/login">
+    <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string} afterSignOutUrl="/login">
       <App />
     </ClerkProvider>
   </StrictMode>,

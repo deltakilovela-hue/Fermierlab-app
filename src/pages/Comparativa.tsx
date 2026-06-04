@@ -2,10 +2,10 @@ import { useState, useMemo } from 'react';
 import { useStore } from '../store/useStore';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-  ResponsiveContainer, ReferenceLine, Cell,
+  ResponsiveContainer, ReferenceLine,
 } from 'recharts';
 import { COLORES_ORGANISMOS, UMBRALES_NEMATODOS } from '../types';
-import { TrendingDown, TrendingUp, Minus, ChevronDown, BarChart3, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { TrendingDown, TrendingUp, Minus, ChevronDown, BarChart3, AlertTriangle } from 'lucide-react';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 

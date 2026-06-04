@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useAuth, useUser, SignUp, SignedIn, SignedOut } from '@clerk/react';
+import { useAuth, useUser, SignUp } from '@clerk/react';
 import { useDataSync } from './hooks/useDataSync';
 import { useStore } from './store/useStore';
 import type { Rol } from './types';
@@ -56,11 +56,10 @@ function ClerkBridge() {
   return <Layout />;
 }
 
-// ── Guard con <SignedIn> / <SignedOut> de Clerk ───────────────────────────────
-// <SignedIn>  → renderiza solo si hay sesión activa
-// <SignedOut> → renderiza solo si NO hay sesión → redirige a /login
+// ── Guard de autenticación ────────────────────────────────────────────────────
+// Mientras Clerk carga → spinner. Si no autenticado → /login. Si autenticado → ClerkBridge.
 function RequireAuth() {
-  const { isLoaded } = useAuth();
+  const { isLoaded, isSignedIn } = useAuth();
 
   // Spinner mientras Clerk carga la sesión (evita flash de redirect)
   if (!isLoaded) {
@@ -71,16 +70,9 @@ function RequireAuth() {
     );
   }
 
-  return (
-    <>
-      <SignedIn>
-        <ClerkBridge />
-      </SignedIn>
-      <SignedOut>
-        <Navigate to="/login" replace />
-      </SignedOut>
-    </>
-  );
+  if (!isSignedIn) return <Navigate to="/login" replace />;
+
+  return <ClerkBridge />;
 }
 
 // ── Guards por rol ────────────────────────────────────────────────────────────

@@ -1,7 +1,7 @@
 import { useStore } from '../store/useStore';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-  ResponsiveContainer, ReferenceLine, Cell,
+  ResponsiveContainer, ReferenceLine,
 } from 'recharts';
 import { COLORES_ORGANISMOS, UMBRALES_NEMATODOS } from '../types';
 import { AlertTriangle, CheckCircle2, FlaskConical, MapPin } from 'lucide-react';
@@ -116,7 +116,6 @@ export default function Dashboard() {
 
   // ── Stats globales ────────────────────────────────────────────────────────
   const totalPuntos = puntos.length;
-  const totalAnalisis = analisis.length;
   const puntosConAlerta = new Set(alertas.map((a) => a.nave)).size;
 
   return (
@@ -133,7 +132,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard label="Clientes" value={clientes.length} sub="activos" />
         <StatCard label="Parcelas" value={parcelas.length} sub="en monitoreo" />
-        <StatCard label="Puntos de muestreo" value={totalPuntos} Icon={MapPin} />
+        <StatCard label="Puntos de muestreo" value={totalPuntos} />
         <StatCard
           label="Naves sobre umbral"
           value={puntosConAlerta}
@@ -256,7 +255,6 @@ export default function Dashboard() {
                 const nave = navesConNem[i];
                 const parcela = parcelas.find((p) => p.id === nave?.parcelaId);
                 const maxVal = Math.max(...orgsNem.map((o) => Number(row[o] ?? 0)));
-                const umbral = UMBRALES_NEMATODOS.find((u) => orgsNem.includes(u.organismo));
                 const nivel = maxVal >= 200 ? 'danger' : maxVal >= 140 ? 'warn' : 'ok';
                 return (
                   <tr key={i} className="border-t border-gray-50 hover:bg-gray-50/50">

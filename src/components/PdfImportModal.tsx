@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function PdfImportModal({ secciones, onClose, onDone }: Props) {
-  const { clientes, parcelas, naves, puntos, addAnalisis, addPunto } = useStore();
+  const { parcelas, naves, puntos, addAnalisis, addPunto } = useStore();
   const [selected, setSelected] = useState<boolean[]>(secciones.map(() => true));
   const [parcelaOverride, setParcelaOverride] = useState<string[]>(secciones.map(() => ''));
   const [naveOverride, setNaveOverride] = useState<string[]>(secciones.map(() => ''));

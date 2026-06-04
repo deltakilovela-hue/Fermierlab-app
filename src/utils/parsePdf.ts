@@ -63,9 +63,8 @@ function extractMetadata(fullText: string) {
   const clienteMatch = fullText.match(/Nombre[:\s]+([^\n]+?)(?:\s+Examen|\s+Cultiv)/i);
   const clienteNombre = clienteMatch?.[1]?.trim() ?? 'Cliente importado';
 
-  // Cultivo
-  const cultivoMatch = fullText.match(/Cultiv[oó][:\s]+([^\s]+)/i);
-  const _ = cultivoMatch?.[1]?.trim() ?? 'No especificado';
+  // Cultivo (detectado pero no utilizado actualmente)
+  // const cultivoMatch = fullText.match(/Cultiv[oó][:\s]+([^\s]+)/i);
 
   // Tipo de muestreo
   const tipoMuestreo: TipoMuestreo = fullText.toLowerCase().includes('postratamiento') || fullText.toLowerCase().includes('post-tratamiento')

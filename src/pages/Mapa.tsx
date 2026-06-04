@@ -6,6 +6,7 @@ import {
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useStore } from '../store/useStore';
+import type { Analisis, Nave, Parcela } from '../types';
 import { COLORES_ORGANISMOS, UMBRALES_NEMATODOS } from '../types';
 import { MapPin, Plus, X, ChevronDown, Pencil, Trash2, CheckCircle2 } from 'lucide-react';
 
@@ -23,7 +24,7 @@ function centroid(pts: [number, number][]): [number, number] {
   ];
 }
 
-function getPuntoColor(puntoId: string, analisis: ReturnType<typeof useStore>['analisis']) {
+function getPuntoColor(puntoId: string, analisis: Analisis[]) {
   const lista = analisis.filter((a) => a.puntoId === puntoId && a.tipo === 'nematodos');
   let sev = 0;
   for (const a of lista) {
@@ -66,8 +67,8 @@ function AddPanel({
   lat: number; lng: number;
   onSave: (naveId: string, tabla: string) => void;
   onCancel: () => void;
-  naves: ReturnType<typeof useStore>['naves'];
-  parcelas: ReturnType<typeof useStore>['parcelas'];
+  naves: Nave[];
+  parcelas: Parcela[];
 }) {
   const [parcelaId, setParcelaId] = useState('');
   const [naveId, setNaveId]       = useState('');
@@ -142,7 +143,7 @@ const DEFAULT_CENTER: [number, number] = [24.8, -107.4];
 const DEFAULT_ZOOM = 13;
 
 export default function Mapa() {
-  const { clientes, parcelas, naves, puntos, analisis, addPunto, updateParcela } = useStore();
+  const { parcelas, naves, puntos, analisis, addPunto, updateParcela } = useStore();
 
   // Puntos mode
   const [addMode, setAddMode]           = useState(false);

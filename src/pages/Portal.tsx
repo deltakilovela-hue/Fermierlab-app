@@ -9,6 +9,7 @@ import {
   ResponsiveContainer, Legend, ReferenceLine, Cell,
 } from 'recharts';
 import { useStore } from '../store/useStore';
+import type { Analisis } from '../types';
 import {
   COLORES_ORGANISMOS, UMBRALES_NEMATODOS, UMBRALES_FITOPATOGENOS,
 } from '../types';
@@ -54,7 +55,7 @@ function parcelaIcon(nombre: string, color: string) {
 
 function puntoSeverity(
   puntoId: string,
-  analisis: ReturnType<typeof useStore>['analisis'],
+  analisis: Analisis[],
 ): 0 | 1 | 2 {
   const lista = analisis.filter((a) => a.puntoId === puntoId && a.tipo === 'nematodos');
   if (!lista.length) return 0;
@@ -280,7 +281,7 @@ export default function Portal() {
         const parcela = misParcelas.find((p) => p.id === nave?.parcelaId);
 
         if (a.tipo === 'nematodos') {
-          return (a.resultadosNematodos ?? []).map((r) => ({
+          return (a.resultadosNematodos ?? []).map((r): PdfDetalleRow => ({
             parcela: parcela?.nombre ?? '',
             nave: nave?.nombre ?? '',
             tabla: punto?.tabla ?? '',
@@ -289,11 +290,12 @@ export default function Portal() {
             organismo: r.organismo,
             c1: r.conteo1, c2: r.conteo2, c3: r.conteo3,
             promedio: r.promedio,
-            resultado: r.individuosPor100cc,
+            resultado: String(r.individuosPor100cc),
+            valor: r.individuosPor100cc,
             umbral: UMBRALES_NEMATODOS.find((u) => u.organismo === r.organismo)?.valor,
           }));
         } else {
-          return (a.resultadosFitopatogenos ?? []).map((r) => ({
+          return (a.resultadosFitopatogenos ?? []).map((r): PdfDetalleRow => ({
             parcela: parcela?.nombre ?? '',
             nave: nave?.nombre ?? '',
             tabla: punto?.tabla ?? '',
@@ -302,7 +304,8 @@ export default function Portal() {
             organismo: r.organismo,
             c1: r.conteo1, c2: r.conteo2, c3: r.conteo3,
             promedio: r.promedio,
-            resultado: r.propagulos,
+            resultado: String(r.propagulos),
+            valor: r.propagulos,
             umbral: UMBRALES_FITOPATOGENOS.find((u) => u.organismo === r.organismo)?.valor,
           }));
         }
@@ -595,7 +598,7 @@ export default function Portal() {
                     <XAxis dataKey="organismo" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
                     <Tooltip
-                      formatter={(v: number, name: string) => [`${v} ind/100cc`, name]}
+                      formatter={(v: unknown, name: unknown) => [`${v} ind/100cc`, name]}
                       cursor={{ fill: '#f9fafb' }}
                     />
                     <Legend iconType="circle" wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />

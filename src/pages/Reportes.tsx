@@ -91,8 +91,8 @@ export default function Reportes() {
     try {
       // Build flat rows for PDF table
       const pdfRows: PdfDetalleRow[] = detalleRows.flatMap(({ a, pt, nave, parc }) => {
-        const resultados = a.tipo === 'nematodos'
-          ? (a.resultadosNematodos ?? []).map((r) => ({
+        const resultados: PdfDetalleRow[] = a.tipo === 'nematodos'
+          ? (a.resultadosNematodos ?? []).map((r): PdfDetalleRow => ({
               parcela:     parc?.nombre   ?? '',
               nave:        nave?.nombre   ?? '',
               tabla:       pt?.tabla      ?? '',
@@ -107,7 +107,7 @@ export default function Reportes() {
               valor:       r.individuosPor100cc,
               umbral:      UMBRALES_NEMATODOS.find((u) => u.organismo === r.organismo)?.valor,
             }))
-          : (a.resultadosFitopatogenos ?? []).map((r) => ({
+          : (a.resultadosFitopatogenos ?? []).map((r): PdfDetalleRow => ({
               parcela:     parc?.nombre   ?? '',
               nave:        nave?.nombre   ?? '',
               tabla:       pt?.tabla      ?? '',

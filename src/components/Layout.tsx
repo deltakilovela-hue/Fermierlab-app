@@ -30,11 +30,6 @@ export default function Layout() {
 
   const nav = ALL_NAV.filter((item) => item.roles.includes(sesion.rol));
 
-  const avatarColor =
-    sesion.rol === 'admin'    ? '#16a34a' :
-    sesion.rol === 'asesor'   ? '#2563eb' :
-    sesion.rol === 'operador' ? '#d97706' : '#7c3aed';
-
   const rolLabel: Record<Rol, string> = {
     admin:    'Administrador',
     asesor:   'Asesor de campo',
@@ -83,7 +78,6 @@ export default function Layout() {
           <div className="flex items-center gap-2.5 px-2 py-2 rounded-xl hover:bg-white/5 transition-colors">
             {/* Avatar con menú desplegable de Clerk */}
             <UserButton
-              afterSignOutUrl="/login"
               userProfileUrl="/perfil"
               userProfileMode="navigation"
               appearance={{

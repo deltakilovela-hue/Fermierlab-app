@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useStore } from '../store/useStore';
-import type { Analisis, ResultadoNematodo, ResultadoFitopatogeno, TipoAnalisis, TipoMuestreo } from '../types';
+import type { Analisis, TipoAnalisis, TipoMuestreo } from '../types';
 import { PlusCircle, ChevronDown, CheckCircle2, FileUp, Loader2, AlertTriangle } from 'lucide-react';
 import { parsePdfFile } from '../utils/parsePdf';
 import type { ParsedSeccion } from '../utils/parsePdf';
@@ -75,7 +75,7 @@ function NumCell({ value, onChange }: { value: string; onChange: (v: string) => 
 }
 
 export default function Captura() {
-  const { clientes, parcelas, naves, puntos, analisis, addAnalisis, addPunto } = useStore();
+  const { clientes, parcelas, naves, puntos, addAnalisis, addPunto } = useStore();
 
   // PDF import state
   const fileInputRef = useRef<HTMLInputElement>(null);
