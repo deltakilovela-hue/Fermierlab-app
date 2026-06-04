@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuth, useUser, SignUp, SignedIn, SignedOut } from '@clerk/react';
+import { useDataSync } from './hooks/useDataSync';
 import { useStore } from './store/useStore';
 import type { Rol } from './types';
 import Layout from './components/Layout';
@@ -25,6 +26,9 @@ import AgenteIA from './components/AgenteIA';
 function ClerkBridge() {
   const { user, isLoaded } = useUser();
   const { setSesion, sesion } = useStore();
+
+  // Carga datos desde Supabase en cuanto el usuario está autenticado
+  useDataSync();
 
   useEffect(() => {
     if (!isLoaded) return;

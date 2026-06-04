@@ -1,202 +1,231 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import type { Cliente, Parcela, Nave, PuntoMuestreo, Analisis, UsuarioSistema, Fumigacion, Conversacion, MensajeChat } from '../types';
-import { clientes as seedClientes, parcelas as seedParcelas, naves as seedNaves, puntos as seedPuntos, analisis as seedAnalisis } from '../data/seed';
-
-const STORE_VERSION = 8; // bump to reset localStorage when seed changes
-
-// ── Usuarios del sistema (no persisten en localStorage) ───────────────────────
-const USUARIOS_SISTEMA: UsuarioSistema[] = [
-  {
-    id: 'admin',
-    nombre: 'Administrador',
-    rol: 'admin',
-    usuario: 'admin',
-    password: 'fermier2026',
-    correo: 'admin@fermierlab.com',
-    negocio: 'Fermier Lab',
-  },
-  {
-    id: 'asesor1',
-    nombre: 'Asesor de Campo',
-    rol: 'asesor',
-    usuario: 'asesor',
-    password: 'campo2026',
-    correo: 'asesor@fermierlab.com',
-    negocio: 'Fermier Lab',
-  },
-  {
-    id: 'op1',
-    nombre: 'Operador Demo',
-    rol: 'operador',
-    usuario: 'operador',
-    password: 'fumigar2026',
-    negocio: 'Fermier Lab',
-  },
-];
+import type {
+  Cliente, Parcela, Nave, PuntoMuestreo,
+  Analisis, UsuarioSistema, Fumigacion, Conversacion, MensajeChat,
+} from '../types';
+import * as db from '../lib/db';
 
 // ── Store interface ───────────────────────────────────────────────────────────
 
 interface Store {
-  clientes: Cliente[];
-  parcelas: Parcela[];
-  naves: Nave[];
-  puntos: PuntoMuestreo[];
-  analisis: Analisis[];
-  fumigaciones: Fumigacion[];
+  // Datos
+  clientes:       Cliente[];
+  parcelas:       Parcela[];
+  naves:          Nave[];
+  puntos:         PuntoMuestreo[];
+  analisis:       Analisis[];
+  fumigaciones:   Fumigacion[];
   conversaciones: Conversacion[];
 
-  // Auth
-  sesion: UsuarioSistema | null;
-  iniciarSesion: (usuario: string, password: string, clientes: Cliente[]) => boolean;
-  setSesion: (s: UsuarioSistema | null) => void;
+  // Estado de carga
+  cargando: boolean;
+  errorDb:  string;
+
+  // Auth (gestionado por Clerk, sincronizado aquí)
+  sesion:       UsuarioSistema | null;
+  setSesion:    (s: UsuarioSistema | null) => void;
   cerrarSesion: () => void;
 
-  addAnalisis: (a: Analisis) => void;
-  addCliente: (c: Cliente) => void;
-  addParcela: (p: Parcela) => void;
-  addNave: (n: Nave) => void;
-  addPunto: (p: PuntoMuestreo) => void;
+  // Carga inicial desde Supabase
+  cargarDatos: (userId?: string) => Promise<void>;
 
-  addFumigacion: (f: Fumigacion) => void;
+  // Clientes
+  addCliente:    (c: Cliente) => void;
+  updateCliente: (id: string, data: Partial<Omit<Cliente, 'id'>>) => void;
+  deleteCliente: (id: string) => void;
+
+  // Parcelas
+  addParcela:    (p: Parcela) => void;
+  updateParcela: (id: string, data: Partial<Omit<Parcela, 'id'>>) => void;
+  deleteParcela: (id: string) => void;
+
+  // Naves
+  addNave:    (n: Nave) => void;
+  updateNave: (id: string, data: Partial<Omit<Nave, 'id'>>) => void;
+  deleteNave: (id: string) => void;
+
+  // Puntos y análisis
+  addPunto:   (p: PuntoMuestreo) => void;
+  addAnalisis:(a: Analisis) => void;
+
+  // Fumigaciones
+  addFumigacion:    (f: Fumigacion) => void;
   updateFumigacion: (id: string, data: Partial<Omit<Fumigacion, 'id'>>) => void;
 
-  addConversacion: (c: Conversacion) => void;
+  // Conversaciones FermierBot
+  addConversacion:    (c: Conversacion) => void;
   updateConversacion: (id: string, data: Partial<Omit<Conversacion, 'id'>>) => void;
-  appendMensaje: (conversacionId: string, msg: MensajeChat) => void;
+  appendMensaje:      (conversacionId: string, msg: MensajeChat) => void;
   deleteConversacion: (id: string) => void;
 
-  updateCliente: (id: string, data: Partial<Omit<Cliente, 'id'>>) => void;
-  updateParcela: (id: string, data: Partial<Omit<Parcela, 'id'>>) => void;
-  updateNave: (id: string, data: Partial<Omit<Nave, 'id'>>) => void;
-  deleteCliente: (id: string) => void;
-  deleteParcela: (id: string) => void;
-  deleteNave: (id: string) => void;
+  // Compatibilidad retroactiva (usado en Login.tsx demo)
+  iniciarSesion: (usuario: string, password: string, clientes: Cliente[]) => boolean;
+}
+
+// ── Helper: sync a Supabase en background (no bloquea la UI) ─────────────────
+
+function sync(promise: Promise<void>) {
+  promise.catch((e) => console.error('[Supabase sync]', e));
 }
 
 // ── Store ─────────────────────────────────────────────────────────────────────
 
-export const useStore = create<Store>()(
-  persist(
-    (set) => ({
-      clientes: seedClientes,
-      parcelas: seedParcelas,
-      naves: seedNaves,
-      puntos: seedPuntos,
-      analisis: seedAnalisis,
-      fumigaciones: [],
-      conversaciones: [],
-      sesion: null,
+export const useStore = create<Store>()((set, get) => ({
+  // Estado inicial vacío — Supabase lo llena al autenticarse
+  clientes:       [],
+  parcelas:       [],
+  naves:          [],
+  puntos:         [],
+  analisis:       [],
+  fumigaciones:   [],
+  conversaciones: [],
+  cargando:       false,
+  errorDb:        '',
+  sesion:         null,
 
-      // ── Auth ────────────────────────────────────────────────────────────────
-      iniciarSesion: (identificador, password, clientesActuales) => {
-        // Normalizar: minúsculas, sin espacios extremos
-        const norm = (s?: string) => (s ?? '').trim().toLowerCase();
-        const key  = norm(identificador);
+  // ── Auth ──────────────────────────────────────────────────────────────────
 
-        // 1. Buscar en usuarios del sistema por cualquier identificador
-        const sys = USUARIOS_SISTEMA.find((u) =>
-          norm(u.usuario)   === key ||
-          norm(u.correo)    === key ||
-          norm(u.telefono)  === key ||
-          norm(u.negocio)   === key ||
-          norm(u.nombre)    === key,
-        );
-        if (sys) {
-          if (sys.password !== password) return false;
-          set({ sesion: sys });
-          return true;
-        }
+  setSesion:    (s) => set({ sesion: s }),
+  cerrarSesion: ()  => set({
+    sesion: null,
+    clientes: [], parcelas: [], naves: [], puntos: [],
+    analisis: [], fumigaciones: [], conversaciones: [],
+  }),
 
-        // 2. Buscar en clientes por cualquier identificador
-        const cli = clientesActuales.find((c) =>
-          norm(c.id)       === key ||
-          norm(c.nombre)   === key ||
-          norm(c.correo)   === key ||
-          norm(c.telefono) === key ||
-          norm(c.negocio)  === key,
-        );
-        if (cli) {
-          if (password !== 'cliente2026') return false;
-          const sesionCli: UsuarioSistema = {
-            id: `cli-${cli.id}`,
-            nombre: cli.nombre,
-            rol: 'cliente',
-            usuario: cli.id,
-            password: 'cliente2026',
-            correo: cli.correo,
-            telefono: cli.telefono,
-            negocio: cli.negocio,
-            clienteId: cli.id,
-          };
-          set({ sesion: sesionCli });
-          return true;
-        }
+  // ── Carga inicial desde Supabase ──────────────────────────────────────────
+  // Se llama una vez cuando el usuario se autentica (ver useDataSync.ts)
 
-        return false;
-      },
+  cargarDatos: async (userId) => {
+    set({ cargando: true, errorDb: '' });
+    try {
+      const [clientes, parcelas, naves, puntos, analisis, fumigaciones, conversaciones] =
+        await Promise.all([
+          db.getClientes(),
+          db.getParcelas(),
+          db.getNaves(),
+          db.getPuntos(),
+          db.getAnalisis(),
+          db.getFumigaciones(),
+          userId ? db.getConversaciones(userId) : Promise.resolve([]),
+        ]);
+      set({ clientes, parcelas, naves, puntos, analisis, fumigaciones, conversaciones });
+    } catch (e) {
+      console.error('[cargarDatos]', e);
+      set({ errorDb: 'Error al cargar datos de Supabase' });
+    } finally {
+      set({ cargando: false });
+    }
+  },
 
-      setSesion:    (s) => set({ sesion: s }),
-      cerrarSesion: ()  => set({ sesion: null }),
+  // ── Clientes ──────────────────────────────────────────────────────────────
 
-      // ── Data ─────────────────────────────────────────────────────────────────
-      addAnalisis:    (a) => set((s) => ({ analisis:     [...s.analisis,     a] })),
-      addCliente:     (c) => set((s) => ({ clientes:     [...s.clientes,     c] })),
-      addParcela:     (p) => set((s) => ({ parcelas:     [...s.parcelas,     p] })),
-      addNave:        (n) => set((s) => ({ naves:        [...s.naves,        n] })),
-      addPunto:       (p) => set((s) => ({ puntos:       [...s.puntos,       p] })),
-      addFumigacion:  (f) => set((s) => ({ fumigaciones: [...s.fumigaciones, f] })),
+  addCliente: (c) => {
+    set((s) => ({ clientes: [...s.clientes, c] }));
+    sync(db.insertCliente(c));
+  },
+  updateCliente: (id, data) => {
+    set((s) => ({ clientes: s.clientes.map((c) => c.id === id ? { ...c, ...data } : c) }));
+    sync(db.updateCliente(id, data));
+  },
+  deleteCliente: (id) => {
+    set((s) => ({ clientes: s.clientes.filter((c) => c.id !== id) }));
+    sync(db.deleteCliente(id));
+  },
 
-      addConversacion:    (c)       => set((s) => ({ conversaciones: [...s.conversaciones, c] })),
-      updateConversacion: (id, data) => set((s) => ({
-        conversaciones: s.conversaciones.map((c) => c.id === id ? { ...c, ...data } : c),
-      })),
-      appendMensaje: (conversacionId, msg) => set((s) => ({
-        conversaciones: s.conversaciones.map((c) =>
-          c.id === conversacionId
-            ? { ...c, mensajes: [...c.mensajes, msg], actualizadaEn: new Date().toISOString() }
-            : c,
-        ),
-      })),
-      deleteConversacion: (id) => set((s) => ({
-        conversaciones: s.conversaciones.filter((c) => c.id !== id),
-      })),
+  // ── Parcelas ──────────────────────────────────────────────────────────────
 
-      updateFumigacion: (id, data) => set((s) => ({
-        fumigaciones: s.fumigaciones.map((f) => f.id === id ? { ...f, ...data } : f),
-      })),
+  addParcela: (p) => {
+    set((s) => ({ parcelas: [...s.parcelas, p] }));
+    sync(db.insertParcela(p));
+  },
+  updateParcela: (id, data) => {
+    set((s) => ({ parcelas: s.parcelas.map((p) => p.id === id ? { ...p, ...data } : p) }));
+    sync(db.updateParcela(id, data));
+  },
+  deleteParcela: (id) => {
+    set((s) => ({ parcelas: s.parcelas.filter((p) => p.id !== id) }));
+    sync(db.deleteParcela(id));
+  },
 
-      updateCliente: (id, data) => set((s) => ({ clientes: s.clientes.map((c) => c.id === id ? { ...c, ...data } : c) })),
-      updateParcela: (id, data) => set((s) => ({ parcelas: s.parcelas.map((p) => p.id === id ? { ...p, ...data } : p) })),
-      updateNave:    (id, data) => set((s) => ({ naves:    s.naves.map((n)    => n.id === id ? { ...n, ...data } : n) })),
-      deleteCliente: (id) => set((s) => ({ clientes: s.clientes.filter((c) => c.id !== id) })),
-      deleteParcela: (id) => set((s) => ({ parcelas: s.parcelas.filter((p) => p.id !== id) })),
-      deleteNave:    (id) => set((s) => ({ naves:    s.naves.filter((n)    => n.id !== id) })),
-    }),
-    {
-      name: 'fermier-storage',
-      version: STORE_VERSION,
-      migrate: (_state, fromVersion) => {
-        console.log(`Migrating store from v${fromVersion} to v${STORE_VERSION} — resetting to seed`);
-        return {
-          clientes: seedClientes,
-          parcelas: seedParcelas,
-          naves: seedNaves,
-          puntos: seedPuntos,
-          analisis: seedAnalisis,
-          fumigaciones: [],
-          conversaciones: [],
-          sesion: null,
-        };
-      },
-    },
-  ),
-);
+  // ── Naves ─────────────────────────────────────────────────────────────────
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-export function credencialCliente(clienteId: string) {
-  return { usuario: clienteId, password: 'cliente2026' };
-}
+  addNave: (n) => {
+    set((s) => ({ naves: [...s.naves, n] }));
+    sync(db.insertNave(n));
+  },
+  updateNave: (id, data) => {
+    set((s) => ({ naves: s.naves.map((n) => n.id === id ? { ...n, ...data } : n) }));
+    sync(db.updateNave(id, data));
+  },
+  deleteNave: (id) => {
+    set((s) => ({ naves: s.naves.filter((n) => n.id !== id) }));
+    sync(db.deleteNave(id));
+  },
+
+  // ── Puntos y análisis ─────────────────────────────────────────────────────
+
+  addPunto: (p) => {
+    set((s) => ({ puntos: [...s.puntos, p] }));
+    sync(db.insertPunto(p));
+  },
+  addAnalisis: (a) => {
+    set((s) => ({ analisis: [...s.analisis, a] }));
+    sync(db.insertAnalisis(a));
+  },
+
+  // ── Fumigaciones ──────────────────────────────────────────────────────────
+
+  addFumigacion: (f) => {
+    set((s) => ({ fumigaciones: [...s.fumigaciones, f] }));
+    sync(db.insertFumigacion(f));
+  },
+  updateFumigacion: (id, data) => {
+    set((s) => ({ fumigaciones: s.fumigaciones.map((f) => f.id === id ? { ...f, ...data } : f) }));
+    sync(db.updateFumigacion(id, data));
+  },
+
+  // ── Conversaciones FermierBot ─────────────────────────────────────────────
+
+  addConversacion: (c) => {
+    set((s) => ({ conversaciones: [...s.conversaciones, c] }));
+    const userId = get().sesion?.id;
+    if (userId) sync(db.insertConversacion(userId, c));
+  },
+  updateConversacion: (id, data) => {
+    set((s) => ({
+      conversaciones: s.conversaciones.map((c) => c.id === id ? { ...c, ...data } : c),
+    }));
+    sync(db.updateConversacion(id, data));
+  },
+  appendMensaje: (conversacionId, msg) => {
+    set((s) => ({
+      conversaciones: s.conversaciones.map((c) =>
+        c.id === conversacionId
+          ? { ...c, mensajes: [...c.mensajes, msg], actualizadaEn: new Date().toISOString() }
+          : c,
+      ),
+    }));
+    // Sincronizar el array completo de mensajes a Supabase
+    const conv = get().conversaciones.find((c) => c.id === conversacionId);
+    if (conv) sync(db.updateConversacion(conversacionId, {
+      mensajes: conv.mensajes,
+      actualizadaEn: conv.actualizadaEn,
+    }));
+  },
+  deleteConversacion: (id) => {
+    set((s) => ({ conversaciones: s.conversaciones.filter((c) => c.id !== id) }));
+    sync(db.deleteConversacion(id));
+  },
+
+  // ── Compatibilidad retroactiva ────────────────────────────────────────────
+  // Este método era del sistema de login manual (antes de Clerk).
+  // Se mantiene para que componentes que aún lo referencien no rompan.
+  // Con Clerk activo, el login real lo gestiona ClerkBridge en App.tsx.
+
+  iniciarSesion: () => false,
+}));
+
+// ── Helpers exportados ────────────────────────────────────────────────────────
 
 /** Distancia Haversine en metros entre dos coordenadas */
 export function haversineM(a: [number, number], b: [number, number]): number {
