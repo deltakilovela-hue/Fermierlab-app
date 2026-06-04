@@ -598,7 +598,7 @@ export default function Portal() {
                     <XAxis dataKey="organismo" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
                     <Tooltip
-                      formatter={(v: unknown, name: unknown) => [`${v} ind/100cc`, name]}
+                      formatter={(v) => [`${v} ind/100cc`]}
                       cursor={{ fill: '#f9fafb' }}
                     />
                     <Legend iconType="circle" wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
