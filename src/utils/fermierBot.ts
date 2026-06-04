@@ -130,12 +130,12 @@ export function buildApiMessages(mensajes: MensajeApi[]): ApiMessage[] {
 export async function llamarClaude(mensajes: MensajeApi[], contexto: string): Promise<string> {
   const systemPrompt = SYSTEM_PROMPT.replace('{CONTEXTO}', contexto);
 
-  const res = await fetch('/api/anthropic/v1/messages', {
+  // Llama a nuestra función serverless (/api/chat). El modelo y la API key
+  // se manejan en el servidor — el navegador solo envía system + messages.
+  const res = await fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 1536,
       system: systemPrompt,
       messages: buildApiMessages(mensajes),
     }),
