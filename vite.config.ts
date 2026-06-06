@@ -3,27 +3,38 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { handleUsers } from './api/_lib/usersCore'
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages'
 const MODEL = 'claude-sonnet-4-5'
 const MAX_TOKENS = 1536
 
-/** Resuelve la API key para el middleware de desarrollo (no afecta producción). */
-function readApiKey(): string {
-  if (process.env.ANTHROPIC_API_KEY) return process.env.ANTHROPIC_API_KEY
-  if (process.env.VITE_ANTHROPIC_API_KEY) return process.env.VITE_ANTHROPIC_API_KEY
+/** Lee una variable de entorno del sistema o de .env.local (solo para dev). */
+function readEnv(...names: string[]): string {
+  for (const n of names) {
+    if (process.env[n]) return process.env[n] as string
+  }
   try {
     const txt = readFileSync(resolve(process.cwd(), '.env.local'), 'utf8')
-    const m = txt.match(/^\s*(?:VITE_)?ANTHROPIC_API_KEY\s*=\s*(.+?)\s*$/m)
-    if (m) return m[1].trim().replace(/^["']|["']$/g, '')
+    for (const n of names) {
+      const m = txt.match(new RegExp('^\\s*' + n + '\\s*=\\s*(.+?)\\s*$', 'm'))
+      if (m) return m[1].trim().replace(/^["']|["']$/g, '')
+    }
   } catch { /* sin .env.local — ok en producción */ }
   return ''
 }
 
+function readBody(req: import('node:http').IncomingMessage): Promise<Record<string, unknown>> {
+  return new Promise((res) => {
+    let raw = ''
+    req.on('data', (c) => { raw += c })
+    req.on('end', () => { try { res(JSON.parse(raw || '{}')) } catch { res({}) } })
+  })
+}
+
 /**
- * Middleware solo-para-desarrollo que replica la función serverless `/api/chat`.
- * Así el FermierBot funciona igual con `npm run dev` que en producción (Vercel),
- * y la API key nunca llega al navegador.
+ * Middleware dev que replica `/api/chat` (FermierBot). La API key nunca llega
+ * al navegador; en producción lo hace la función serverless de Vercel.
  */
 function devChatApi(apiKey: string): Plugin {
   return {
@@ -64,11 +75,29 @@ function devChatApi(apiKey: string): Plugin {
   }
 }
 
+/** Middleware dev que replica `/api/users` (panel de administración). */
+function devUsersApi(secretKey: string): Plugin {
+  return {
+    name: 'dev-users-api',
+    configureServer(server) {
+      server.middlewares.use('/api/users', async (req, res) => {
+        const token = (req.headers['authorization'] as string | undefined)?.replace(/^Bearer\s+/i, '') ?? null
+        const body = await readBody(req)
+        const { status, data } = await handleUsers({ method: req.method ?? 'GET', token, body, secretKey })
+        res.statusCode = status
+        res.setHeader('content-type', 'application/json')
+        res.end(JSON.stringify(data))
+      })
+    },
+  }
+}
+
 export default defineConfig(() => {
-  const apiKey = readApiKey()
+  const apiKey = readEnv('ANTHROPIC_API_KEY', 'VITE_ANTHROPIC_API_KEY')
+  const secretKey = readEnv('CLERK_SECRET_KEY')
 
   return {
-    plugins: [react(), tailwindcss(), devChatApi(apiKey)],
+    plugins: [react(), tailwindcss(), devChatApi(apiKey), devUsersApi(secretKey)],
     server: {
       port: 5173,
       strictPort: false,

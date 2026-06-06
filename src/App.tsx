@@ -16,6 +16,7 @@ import Portal from './pages/Portal';
 import Fumigacion from './pages/Fumigacion';
 import AgenteChat from './pages/AgenteChat';
 import Perfil from './pages/Perfil';
+import Usuarios from './pages/Usuarios';
 import AgenteIA from './components/AgenteIA';
 
 // ── Puente Clerk → Zustand ────────────────────────────────────────────────────
@@ -158,6 +159,14 @@ export default function App() {
           <Route path="fumigacion" element={<Fumigacion />} />
           <Route path="agente"     element={<AgenteChat />} />
           <Route path="perfil"     element={<Perfil />} />
+          <Route
+            path="usuarios"
+            element={
+              <OnlyAdmin>
+                <Usuarios />
+              </OnlyAdmin>
+            }
+          />
           <Route
             path="configuracion"
             element={
