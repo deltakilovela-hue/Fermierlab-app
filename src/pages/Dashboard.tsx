@@ -29,7 +29,7 @@ function StatCard({ label, value, sub, color }: { label: string; value: string |
   return (
     <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
       <p className="text-xs text-gray-500 mb-1">{label}</p>
-      <p className="text-2xl font-bold" style={{ color: color ?? '#1a3320' }}>{value}</p>
+      <p className="text-2xl font-bold" style={{ color: color ?? '#1769a5' }}>{value}</p>
       {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
     </div>
   );
@@ -122,7 +122,7 @@ export default function Dashboard() {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-bold text-[#1a3320]">Dashboard general</h1>
+        <h1 className="text-xl font-bold text-[#1769a5]">Dashboard general</h1>
         <p className="text-sm text-gray-500">
           {clientes[0]?.nombre} — Muestreo Abril 2026 — Folio CLN-N-026
         </p>

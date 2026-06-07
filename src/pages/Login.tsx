@@ -1,5 +1,5 @@
 import { SignIn } from '@clerk/react';
-import { Leaf } from 'lucide-react';
+import Logo from '../components/Logo';
 
 // ── Apariencia personalizada de Clerk para que combine con la app ─────────────
 
@@ -16,16 +16,16 @@ const clerkAppearance = {
     formFieldLabel:       'text-xs font-bold text-gray-500 uppercase tracking-wider',
     formFieldInput:
       'border-2 border-gray-200 rounded-2xl px-4 py-3.5 text-base bg-gray-50 ' +
-      'focus:bg-white focus:border-[#1a3320] focus:ring-0 transition-colors',
+      'focus:bg-white focus:border-[#1769a5] focus:ring-0 transition-colors',
     formButtonPrimary:
-      'bg-[#1a3320] hover:bg-[#254830] rounded-2xl py-3.5 text-base font-bold ' +
+      'bg-[#1769a5] hover:bg-[#11537f] rounded-2xl py-3.5 text-base font-bold ' +
       'transition-colors shadow-sm',
-    footerActionLink:     'text-[#1a3320] hover:text-[#254830] font-medium',
+    footerActionLink:     'text-[#1769a5] hover:text-[#11537f] font-medium',
     identityPreviewText:  'text-gray-700',
-    formResendCodeLink:   'text-[#1a3320] hover:text-[#254830]',
+    formResendCodeLink:   'text-[#1769a5] hover:text-[#11537f]',
     otpCodeFieldInput:
       'border-2 border-gray-200 rounded-xl text-lg font-bold ' +
-      'focus:border-[#1a3320] focus:ring-0',
+      'focus:border-[#1769a5] focus:ring-0',
   },
 };
 
@@ -36,15 +36,9 @@ export default function Login() {
     <div className="min-h-screen flex flex-col lg:flex-row">
 
       {/* ── Panel izquierdo — marca ───────────────────────────────────────────── */}
-      <div className="hidden lg:flex flex-col justify-between bg-[#1a3320] text-white w-80 shrink-0 p-10">
+      <div className="hidden lg:flex flex-col justify-between bg-[#1769a5] text-white w-80 shrink-0 p-10">
         {/* Logo */}
-        <div>
-          <div className="w-14 h-14 rounded-2xl bg-green-400/20 flex items-center justify-center mb-5">
-            <Leaf size={28} className="text-green-300" />
-          </div>
-          <h1 className="text-2xl font-bold leading-tight">Fermier Lab</h1>
-          <p className="text-green-300 mt-1 text-sm">Sistema de Muestreo Agrícola</p>
-        </div>
+        <Logo variant="dark" size={36} />
 
         {/* Características */}
         <div className="space-y-4">
@@ -55,16 +49,16 @@ export default function Login() {
             'Comparativa pre / post tratamiento',
             'Asesor agrícola con inteligencia artificial',
           ].map((f) => (
-            <div key={f} className="flex items-center gap-3 text-sm text-green-100/80">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0" />
+            <div key={f} className="flex items-center gap-3 text-sm text-white/80">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#3aa935] shrink-0" />
               {f}
             </div>
           ))}
         </div>
 
         <div>
-          <p className="text-[11px] text-green-400/60">Culiacán, Sinaloa</p>
-          <p className="text-[11px] text-white/30 mt-0.5">v1.3.0 — Fase 4</p>
+          <p className="text-[11px] text-white/50">Culiacán, Sinaloa</p>
+          <p className="text-[11px] text-white/30 mt-0.5">v1.4.0 — Fermier</p>
         </div>
       </div>
 
@@ -73,12 +67,8 @@ export default function Login() {
         p-5 sm:p-8 min-h-screen lg:min-h-0">
 
         {/* Logo móvil */}
-        <div className="lg:hidden mb-8 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-[#1a3320] flex items-center justify-center mx-auto mb-3">
-            <Leaf size={26} className="text-green-300" />
-          </div>
-          <h1 className="text-xl font-bold text-[#1a3320]">Fermier Lab</h1>
-          <p className="text-sm text-gray-500">Sistema de Muestreo Agrícola</p>
+        <div className="lg:hidden mb-8 flex justify-center">
+          <Logo variant="light" size={30} />
         </div>
 
         {/* Componente de inicio de sesión de Clerk

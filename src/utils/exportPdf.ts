@@ -57,7 +57,7 @@ export interface ReporteData {
 
 const ORGS_NEM  = ['Meloidogyne', 'Pratylenchus', 'Rotylenchulus', 'Aphelenchus'];
 const ORGS_FITO = ['Fusarium spp', 'Fusarium solani', 'Aspergillus', 'Trichoderma', 'B.Anaerobias'];
-const VERDE     = '#1a3320';
+const VERDE     = '#1769a5';
 const M         = 14; // page margin mm
 
 // ── Bar chart ─────────────────────────────────────────────────────────────────
@@ -189,11 +189,11 @@ export async function exportPdf(data: ReporteData) {
   pdf.setTextColor(255, 255, 255);
   pdf.setFontSize(13);
   pdf.setFont('helvetica', 'bold');
-  pdf.text('Fermier Lab', M, 10);
+  pdf.text('FERMIER', M, 10);
 
   pdf.setFontSize(7.5);
   pdf.setFont('helvetica', 'normal');
-  pdf.text('Sistema de Muestreo Agricola  |  Culiacan, Sinaloa', M, 16.5);
+  pdf.text('Laboratorio y Asesoria Agricola  |  Culiacan, Sinaloa', M, 16.5);
 
   pdf.setFontSize(8.5);
   pdf.setFont('helvetica', 'bold');
@@ -397,7 +397,7 @@ function drawFooter(pdf: jsPDF, W: number, H: number) {
   pdf.setFontSize(6);
   pdf.setTextColor(160, 160, 160);
   pdf.text(
-    'Fermier Lab — Sistema de Muestreo Agricola | Culiacan, Sinaloa',
+    'FERMIER — Laboratorio y Asesoria Agricola | Culiacan, Sinaloa',
     W / 2, H - 7,
     { align: 'center' },
   );

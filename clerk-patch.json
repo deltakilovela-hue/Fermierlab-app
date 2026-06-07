@@ -1,0 +1,7 @@
+{
+  "auth_password": {
+    "device_trust": {
+      "enabled": false
+    }
+  }
+}

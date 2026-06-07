@@ -592,13 +592,13 @@ export default function Configuracion() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-[#1a3320]">Configuración</h1>
+          <h1 className="text-xl font-bold text-[#1769a5]">Configuración</h1>
           <p className="text-sm text-gray-500">Gestiona clientes, parcelas y naves del sistema</p>
         </div>
         <button
           onClick={() => setShowWizard(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#1a3320] text-white text-sm font-medium
-            rounded-xl hover:bg-[#254830] transition-colors shadow-sm shrink-0"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#1769a5] text-white text-sm font-medium
+            rounded-xl hover:bg-[#11537f] transition-colors shadow-sm shrink-0"
         >
           <UserPlus size={15} /> Alta de cliente
         </button>
@@ -612,7 +612,7 @@ export default function Configuracion() {
             onClick={() => setTab(key)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               tab === key
-                ? 'bg-[#1a3320] text-white'
+                ? 'bg-[#1769a5] text-white'
                 : 'text-gray-600 hover:bg-gray-50'
             }`}
           >

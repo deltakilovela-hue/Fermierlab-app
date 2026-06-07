@@ -1,15 +1,43 @@
 @import "tailwindcss";
 
+/* ── Marca Fermier ───────────────────────────────────────────────
+   Azul   #1769a5  (FERMIER)
+   Verde  #3aa935  (Laboratorio y Asesoría Agrícola)
+*/
+:root {
+  --fermier-blue: #1769a5;
+  --fermier-blue-dark: #11537f;
+  --fermier-green: #3aa935;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
-  background-color: #f1f5f1;
-  color: #1a2e1a;
+  font-family: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f1f5f7;
+  color: #1e293b;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Wordmark de la marca */
+.brand-wordmark {
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+.brand-tagline {
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Títulos con la tipografía de marca */
+h1, h2, h3 {
+  font-family: 'Montserrat', system-ui, sans-serif;
 }
 
 #root {

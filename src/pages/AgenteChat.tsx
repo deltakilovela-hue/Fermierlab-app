@@ -286,7 +286,7 @@ export default function AgenteChat() {
       />
 
       {/* ── Sidebar ──────────────────────────────────────────────────────────── */}
-      <aside className="w-72 bg-[#1a3320] flex flex-col shrink-0">
+      <aside className="w-72 bg-[#1769a5] flex flex-col shrink-0">
 
         {/* Brand + new chat */}
         <div className="px-4 pt-5 pb-3 border-b border-white/10">
@@ -394,8 +394,8 @@ export default function AgenteChat() {
 
         {/* Header */}
         <div className="flex items-center gap-3 px-6 py-4 bg-white border-b border-gray-100 shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-[#1a3320]/10 flex items-center justify-center">
-            <Bot size={18} className="text-[#1a3320]" />
+          <div className="w-9 h-9 rounded-xl bg-[#1769a5]/10 flex items-center justify-center">
+            <Bot size={18} className="text-[#1769a5]" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-gray-800 text-sm truncate">
@@ -420,7 +420,7 @@ export default function AgenteChat() {
           {/* Empty / welcome state */}
           {!convSeleccionada && (
             <div className="flex flex-col items-center justify-center h-full max-w-lg mx-auto text-center">
-              <div className="w-16 h-16 rounded-2xl bg-[#1a3320] flex items-center justify-center mb-4 shadow-xl shadow-green-900/20">
+              <div className="w-16 h-16 rounded-2xl bg-[#1769a5] flex items-center justify-center mb-4 shadow-xl shadow-green-900/20">
                 <Sprout size={32} className="text-green-300" />
               </div>
               <h2 className="text-xl font-bold text-gray-800 mb-2">FermierBot</h2>
@@ -468,7 +468,7 @@ export default function AgenteChat() {
           {convSeleccionada?.mensajes.map((m, i) => (
             <div key={i} className={`flex gap-3 ${m.rol === 'user' ? 'flex-row-reverse' : ''}`}>
               {m.rol === 'assistant' && (
-                <div className="w-8 h-8 rounded-full bg-[#1a3320] flex items-center justify-center shrink-0 mt-1">
+                <div className="w-8 h-8 rounded-full bg-[#1769a5] flex items-center justify-center shrink-0 mt-1">
                   <Bot size={15} className="text-green-300" />
                 </div>
               )}
@@ -476,7 +476,7 @@ export default function AgenteChat() {
                 <div
                   className={`rounded-2xl overflow-hidden text-sm leading-relaxed ${
                     m.rol === 'user'
-                      ? 'bg-[#1a3320] text-white rounded-tr-sm'
+                      ? 'bg-[#1769a5] text-white rounded-tr-sm'
                       : 'bg-white text-gray-700 shadow-sm rounded-tl-sm border border-gray-100'
                   }`}
                 >
@@ -504,7 +504,7 @@ export default function AgenteChat() {
           {/* Typing indicator */}
           {cargando && (
             <div className="flex gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#1a3320] flex items-center justify-center shrink-0 mt-1">
+              <div className="w-8 h-8 rounded-full bg-[#1769a5] flex items-center justify-center shrink-0 mt-1">
                 <Bot size={15} className="text-green-300" />
               </div>
               <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm border border-gray-100
@@ -605,7 +605,7 @@ export default function AgenteChat() {
             <button
               onClick={() => enviar()}
               disabled={(!input.trim() && !imagenPrev) || cargando}
-              className="w-10 h-10 rounded-xl bg-[#1a3320] disabled:opacity-30 hover:bg-[#254830]
+              className="w-10 h-10 rounded-xl bg-[#1769a5] disabled:opacity-30 hover:bg-[#11537f]
                 flex items-center justify-center transition-colors shrink-0"
             >
               <Send size={16} className="text-white" />

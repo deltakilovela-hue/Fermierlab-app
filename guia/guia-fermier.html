@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Guía de Usuario — Fermier Lab</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; color: #1f2937; line-height: 1.5; }
+
+  .page {
+    width: 210mm; min-height: 297mm; padding: 18mm 16mm; position: relative;
+    page-break-after: always; background: #fff; overflow: hidden;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  h1 { font-size: 26px; color: #1a3320; font-weight: 800; margin-bottom: 6px; }
+  h2 { font-size: 20px; color: #1a3320; font-weight: 800; margin: 0 0 14px; padding-bottom: 8px; border-bottom: 3px solid #16a34a; }
+  h3 { font-size: 15px; color: #1a3320; font-weight: 700; margin: 16px 0 8px; }
+  p  { font-size: 12.5px; color: #374151; margin-bottom: 8px; }
+  ul, ol { margin: 6px 0 10px 20px; }
+  li { font-size: 12.5px; color: #374151; margin-bottom: 5px; }
+  .small { font-size: 11px; color: #6b7280; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 20px; color: #fff; }
+
+  /* ── Cover ── */
+  .cover { background: #1a3320; color: #fff; display: flex; flex-direction: column; justify-content: space-between; }
+  .cover .logo { width: 70px; height: 70px; border-radius: 20px; background: rgba(134,239,172,.2);
+    display: flex; align-items: center; justify-content: center; font-size: 38px; margin-bottom: 26px; }
+  .cover h1 { color: #fff; font-size: 44px; line-height: 1.1; }
+  .cover .sub { color: #86efac; font-size: 18px; margin-top: 8px; }
+  .cover .meta { color: rgba(255,255,255,.5); font-size: 13px; }
+  .cover .pill { display:inline-block; background: rgba(134,239,172,.15); color:#86efac; padding:6px 16px; border-radius:30px; font-size:13px; font-weight:600; margin-top:20px; }
+
+  /* ── Screenshot frame (mockup) ── */
+  .shot { border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,.10); margin: 10px 0 6px; }
+  .shot .bar { background: #e8ede8; padding: 7px 12px; display: flex; gap: 6px; align-items: center; }
+  .shot .bar i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .shot .bar .u { margin-left: 10px; font-size: 10px; color: #6b7280; background:#fff; padding:2px 10px; border-radius:20px; }
+
+  .cap { font-size: 11px; color: #6b7280; font-style: italic; margin-bottom: 14px; }
+
+  /* ── App mockup shell ── */
+  .app { display: flex; height: 420px; font-size: 11px; }
+  .side { width: 150px; background: #1a3320; color: #fff; padding: 12px 0; flex-shrink: 0; }
+  .side .brand { display: flex; gap: 7px; align-items: center; padding: 0 14px 12px; border-bottom: 1px solid rgba(255,255,255,.1); margin-bottom: 8px; }
+  .side .brand .leaf { font-size: 16px; }
+  .side .brand b { font-size: 11px; }
+  .side .brand span { font-size: 8px; color: #86efac; display: block; }
+  .side .nav { padding: 0 8px; }
+  .side .nav a { display: flex; gap: 8px; align-items: center; padding: 7px 9px; border-radius: 8px; color: #d1fae5; margin-bottom: 2px; font-size: 10px; }
+  .side .nav a.on { background: #16a34a; color: #fff; font-weight: 600; }
+  .side .user { position: absolute; bottom: 14px; width: 134px; padding: 9px; border-top: 1px solid rgba(255,255,255,.1); display:flex; gap:7px; align-items:center; }
+  .side .user .av { width: 22px; height: 22px; border-radius: 50%; background:#7c3aed; color:#fff; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; }
+  .side .user b { font-size: 9px; display:block; }
+  .side .user span { font-size: 8px; color: #86efac; }
+  .main { flex: 1; background: #f1f5f1; padding: 14px; overflow: hidden; position: relative; }
+
+  .card { background: #fff; border-radius: 12px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-bottom: 10px; }
+  .row { display: flex; gap: 10px; }
+  .stat { flex: 1; background: #fff; border-radius: 12px; padding: 11px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .stat .n { font-size: 20px; font-weight: 800; color: #1a3320; }
+  .stat .l { font-size: 9px; color: #6b7280; text-transform: uppercase; letter-spacing: .3px; }
+  .bars { display: flex; align-items: flex-end; gap: 8px; height: 110px; padding-top: 10px; }
+  .bars .b { flex: 1; border-radius: 4px 4px 0 0; }
+  .pageTitle { font-size: 16px; font-weight: 800; color: #1a3320; margin-bottom: 3px; }
+  .pageSub { font-size: 10px; color: #6b7280; margin-bottom: 12px; }
+
+  /* steps */
+  .steps { counter-reset: s; margin: 8px 0; }
+  .step { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
+  .step .num { counter-increment: s; background: #16a34a; color: #fff; width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; flex-shrink: 0; }
+  .step .num::before { content: counter(s); }
+  .step .txt b { color: #1a3320; }
+
+  .note { background: #f0fdf4; border-left: 4px solid #16a34a; padding: 10px 14px; border-radius: 6px; margin: 10px 0; }
+  .note.warn { background: #fffbeb; border-color: #d97706; }
+  .note.danger { background: #fef2f2; border-color: #dc2626; }
+  .note p { margin: 0; font-size: 11.5px; }
+  .note b { color: #1a3320; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 11px; }
+  th { background: #1a3320; color: #fff; text-align: left; padding: 8px 10px; font-weight: 600; }
+  td { padding: 7px 10px; border-bottom: 1px solid #e5e7eb; }
+  tr:nth-child(even) td { background: #f9fafb; }
+
+  .toc-item { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px dashed #d1d5db; font-size: 13px; }
+  .toc-item b { color: #1a3320; }
+  .toc-num { color: #16a34a; font-weight: 700; margin-right: 10px; }
+
+  .foot { position: absolute; bottom: 10mm; left: 16mm; right: 16mm; display: flex; justify-content: space-between;
+    font-size: 9px; color: #9ca3af; border-top: 1px solid #e5e7eb; padding-top: 6px; }
+  .pill-row { display:flex; gap:6px; flex-wrap:wrap; margin:8px 0; }
+  .chip { font-size: 10px; padding: 3px 10px; border-radius: 20px; background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; }
+  .chip.b { background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe; }
+</style>
+</head>
+<body>
+
+<!-- ════════════ PORTADA ════════════ -->
+<div class="page cover">
+  <div>
+    <div class="logo">🌿</div>
+    <h1>Guía de Usuario</h1>
+    <div class="sub">Fermier Lab — Sistema de Muestreo Agrícola</div>
+    <div class="pill">Plataforma web · PWA · Inteligencia Artificial</div>
+  </div>
+  <div>
+    <div style="height:1px;background:rgba(255,255,255,.15);margin-bottom:18px"></div>
+    <div class="meta">
+      <b style="color:#fff;font-size:15px">Laboratorio Fermier Lab</b><br>
+      Culiacán, Sinaloa · México<br>
+      Versión 1.3 — Fase 4 · Junio 2026
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ ÍNDICE ════════════ -->
+<div class="page">
+  <h1>Índice</h1>
+  <p class="small">Esta guía explica, paso a paso, cómo usar cada función de la plataforma Fermier Lab.</p>
+  <div style="margin-top:20px">
+    <div class="toc-item"><span><span class="toc-num">1</span><b>¿Qué es Fermier Lab?</b></span><span class="small">3</span></div>
+    <div class="toc-item"><span><span class="toc-num">2</span><b>Roles y tipos de acceso</b></span><span class="small">4</span></div>
+    <div class="toc-item"><span><span class="toc-num">3</span><b>Iniciar sesión</b></span><span class="small">5</span></div>
+    <div class="toc-item"><span><span class="toc-num">4</span><b>Dashboard (panel principal)</b></span><span class="small">6</span></div>
+    <div class="toc-item"><span><span class="toc-num">5</span><b>Captura de muestras</b></span><span class="small">7</span></div>
+    <div class="toc-item"><span><span class="toc-num">6</span><b>Reportes de laboratorio</b></span><span class="small">8</span></div>
+    <div class="toc-item"><span><span class="toc-num">7</span><b>Comparativa pre / post tratamiento</b></span><span class="small">9</span></div>
+    <div class="toc-item"><span><span class="toc-num">8</span><b>Mapa de parcelas</b></span><span class="small">10</span></div>
+    <div class="toc-item"><span><span class="toc-num">9</span><b>Portal del cliente</b></span><span class="small">11</span></div>
+    <div class="toc-item"><span><span class="toc-num">10</span><b>Fumigación con GPS</b></span><span class="small">12</span></div>
+    <div class="toc-item"><span><span class="toc-num">11</span><b>FermierBot — Asesor IA</b></span><span class="small">13</span></div>
+    <div class="toc-item"><span><span class="toc-num">12</span><b>Configuración y gestión de datos</b></span><span class="small">14</span></div>
+    <div class="toc-item"><span><span class="toc-num">13</span><b>Gestión de usuarios (panel admin)</b></span><span class="small">15</span></div>
+    <div class="toc-item"><span><span class="toc-num">14</span><b>Método de uso por tipo de usuario</b></span><span class="small">16</span></div>
+  </div>
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 2</span></div>
+</div>
+
+<!-- ════════════ 1. QUÉ ES ════════════ -->
+<div class="page">
+  <h2>1 · ¿Qué es Fermier Lab?</h2>
+  <p>Fermier Lab es la plataforma digital del laboratorio que acompaña al productor agrícola durante <b>todo el ciclo de cultivo</b>, no solo cuando entrega resultados. Reemplaza los reportes en papel o PDF por un portal vivo con datos, alertas e inteligencia artificial.</p>
+
+  <h3>¿Qué resuelve?</h3>
+  <ul>
+    <li><b>Análisis digitales:</b> nematodos y fitopatógenos con historial completo por parcela y nave.</li>
+    <li><b>Alertas de umbrales:</b> el sistema avisa cuando un organismo supera el umbral de daño económico.</li>
+    <li><b>Rastreo de fumigación:</b> los operadores marcan su ruta por GPS; queda registro de la cobertura real.</li>
+    <li><b>Asesor con IA (FermierBot):</b> diagnóstico por foto, planes de tratamiento y dudas del cultivo 24/7.</li>
+    <li><b>Comparativa pre/post:</b> evidencia visual de si un tratamiento funcionó.</li>
+  </ul>
+
+  <h3>¿Quién la usa?</h3>
+  <div class="pill-row">
+    <span class="chip">👨‍💼 Administrador</span>
+    <span class="chip">🔬 Asesor de campo</span>
+    <span class="chip b">🌱 Operador / Fumigador</span>
+    <span class="chip b">🏢 Cliente / Productor</span>
+  </div>
+
+  <div class="note">
+    <p>💡 <b>Idea clave:</b> el laboratorio se posiciona como líder en Culiacán porque ofrece una experiencia que los demás laboratorios no tienen. El cliente que la prueba difícilmente se cambia a otro proveedor.</p>
+  </div>
+
+  <h3>Acceso</h3>
+  <p>La plataforma funciona desde cualquier navegador (computadora, tablet o celular) y se puede instalar como app. No requiere descargas desde tienda de aplicaciones.</p>
+
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 3</span></div>
+</div>
+
+<!-- ════════════ 2. ROLES ════════════ -->
+<div class="page">
+  <h2>2 · Roles y tipos de acceso</h2>
+  <p>Cada usuario tiene un rol que define qué puede ver y hacer. El rol se asigna al crear la cuenta.</p>
+
+  <table>
+    <tr><th>Rol</th><th>Color</th><th>Qué puede hacer</th></tr>
+    <tr><td><b>Administrador</b></td><td><span class="tag" style="background:#16a34a">Verde</span></td><td>Acceso total: dashboard, captura, reportes, mapa, gestión de clientes y configuración del sistema.</td></tr>
+    <tr><td><b>Asesor de campo</b></td><td><span class="tag" style="background:#2563eb">Azul</span></td><td>Captura de muestras, reportes, comparativa, mapa y portal de clientes. No accede a configuración.</td></tr>
+    <tr><td><b>Operador / Fumigador</b></td><td><span class="tag" style="background:#d97706">Ámbar</span></td><td>Solo registro de rutas de fumigación con GPS y su historial. Vista simplificada para celular.</td></tr>
+    <tr><td><b>Cliente / Productor</b></td><td><span class="tag" style="background:#7c3aed">Morado</span></td><td>Ve únicamente sus propios análisis, gráficas y comparativas. No ve datos de otros clientes.</td></tr>
+  </table>
+
+  <h3>Métodos para iniciar sesión</h3>
+  <div class="pill-row">
+    <span class="chip">📧 Correo y contraseña</span>
+    <span class="chip">🔵 Google</span>
+    <span class="chip">🔑 Passkey (huella / Face ID)</span>
+  </div>
+  <p class="small">La autenticación es gestionada por Clerk, un servicio de seguridad profesional. Las contraseñas nunca se guardan en la aplicación.</p>
+
+  <div class="note warn">
+    <p>⚠️ <b>Importante:</b> cuando un usuario nuevo se registra, entra como <b>Cliente</b> por defecto. El administrador debe asignarle su rol real (ver sección 13).</p>
+  </div>
+
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 4</span></div>
+</div>
+
+<!-- ════════════ 3. LOGIN ════════════ -->
+<div class="page">
+  <h2>3 · Iniciar sesión</h2>
+  <div class="shot">
+    <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="u">fermierlab-app.vercel.app/login</span></div>
+    <div style="display:flex;height:380px;font-size:11px">
+      <div style="width:230px;background:#1a3320;color:#fff;padding:26px 22px;display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div style="width:46px;height:46px;border-radius:14px;background:rgba(134,239,172,.2);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px">🌿</div>
+          <div style="font-size:19px;font-weight:800">Fermier Lab</div>
+          <div style="font-size:11px;color:#86efac;margin-top:4px">Sistema de Muestreo Agrícola</div>
+        </div>
+        <div style="font-size:10px;color:#d1fae5;line-height:2">
+          <div>• Captura de resultados en campo</div>
+          <div>• Análisis de nematodos y hongos</div>
+          <div>• Mapeo satelital de parcelas</div>
+          <div>• Comparativa pre / post</div>
+          <div>• Asesor agrícola con IA</div>
+        </div>
+        <div style="font-size:9px;color:rgba(255,255,255,.4)">Culiacán, Sinaloa · v1.3.0</div>
+      </div>
+      <div style="flex:1;background:#f1f5f1;display:flex;align-items:center;justify-content:center;padding:20px">
+        <div style="background:#fff;border-radius:18px;box-shadow:0 8px 30px rgba(0,0,0,.1);padding:28px;width:280px">
+          <div style="font-size:16px;font-weight:800;color:#1a3320;text-align:center">Iniciar sesión</div>
+          <div style="font-size:10px;color:#6b7280;text-align:center;margin-bottom:18px">Bienvenido de vuelta</div>
+          <div style="border:1.5px solid #e5e7eb;border-radius:10px;padding:9px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:11px;font-weight:600;margin-bottom:14px">🔵 Continuar con Google</div>
+          <div style="display:flex;align-items:center;gap:8px;margin:14px 0"><div style="flex:1;height:1px;background:#e5e7eb"></div><span style="font-size:9px;color:#9ca3af">o con correo</span><div style="flex:1;height:1px;background:#e5e7eb"></div></div>
+          <div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase;margin-bottom:4px">Correo</div>
+          <div style="border:1.5px solid #e5e7eb;border-radius:10px;padding:9px;font-size:11px;color:#9ca3af;background:#f9fafb;margin-bottom:12px">tu@correo.com</div>
+          <div style="background:#1a3320;color:#fff;border-radius:10px;padding:10px;text-align:center;font-size:12px;font-weight:700">Continuar →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">Pantalla de inicio de sesión con Google, correo/contraseña y passkeys.</div>
+
+  <div class="steps">
+    <div class="step"><div class="num"></div><div class="txt"><b>Abre la dirección</b> de la plataforma en tu navegador: <i>fermierlab-app.vercel.app</i></div></div>
+    <div class="step"><div class="num"></div><div class="txt"><b>Elige tu método:</b> el más rápido es "Continuar con Google". También puedes usar correo y contraseña, o tu huella/Face ID si ya la registraste.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Si es tu primera vez, usa <b>"Regístrate"</b> para crear tu cuenta. El administrador te asignará tu rol después.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Al entrar, el sistema te lleva automáticamente a la pantalla que corresponde a tu rol.</div></div>
+  </div>
+
+  <h3>Cuentas actuales de la plataforma</h3>
+  <table>
+    <tr><th>Tipo</th><th>Correo</th><th>Acceso</th></tr>
+    <tr><td><b>Administrador</b></td><td>ctaj.vega89@gmail.com</td><td>Contraseña <code>AdminFermier2026</code> · o Google</td></tr>
+    <tr><td><b>Asesor</b></td><td>nutricionkarinalara@gmail.com</td><td>Contraseña <code>AsesorFermier2026</code> · o Google</td></tr>
+    <tr><td><b>Operador</b></td><td>deltakilo.vela@gmail.com</td><td>Google · o contraseña <code>OperadorFermier2026</code></td></tr>
+    <tr><td><b>Cliente</b></td><td>(correo del productor)</td><td>Se crea desde el panel de Usuarios</td></tr>
+  </table>
+  <div class="note"><p>🔑 <b>Notas:</b> las contraseñas se pueden cambiar desde el perfil (avatar → <i>Manage account</i>). Activa una <b>passkey</b> para entrar con huella o Face ID sin escribir contraseña.</p></div>
+
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 5</span></div>
+</div>
+
+<!-- ════════════ 4. DASHBOARD ════════════ -->
+<div class="page">
+  <h2>4 · Dashboard (panel principal)</h2>
+  <div class="shot">
+    <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="u">Dashboard</span></div>
+    <div class="app">
+      <div class="side">
+        <div class="brand"><span class="leaf">🌿</span><div><b>Fermier Lab</b><span>Sistema de muestreo</span></div></div>
+        <div class="nav">
+          <a class="on">📊 Dashboard</a>
+          <a>🧪 Reportes</a>
+          <a>📈 Comparativa</a>
+          <a>🗺️ Mapa</a>
+          <a>➕ Captura</a>
+          <a>👥 Portal cliente</a>
+          <a>🌱 Fumigación</a>
+          <a>🤖 Agente IA</a>
+          <a>👤 Usuarios</a>
+          <a>⚙️ Configuración</a>
+        </div>
+        <div class="user"><div class="av" style="background:#16a34a">A</div><div><b>Administrador</b><span>Admin</span></div></div>
+      </div>
+      <div class="main">
+        <div class="pageTitle">Panel general</div>
+        <div class="pageSub">Resumen de tu laboratorio · Junio 2026</div>
+        <div class="row" style="margin-bottom:10px">
+          <div class="stat"><div class="n">12</div><div class="l">Clientes</div></div>
+          <div class="stat"><div class="n">34</div><div class="l">Parcelas</div></div>
+          <div class="stat"><div class="n">148</div><div class="l">Análisis</div></div>
+          <div class="stat"><div class="n" style="color:#dc2626">5</div><div class="l">Alertas</div></div>
+        </div>
+        <div class="card">
+          <div style="font-size:11px;font-weight:700;color:#1a3320;margin-bottom:6px">Organismos detectados por mes</div>
+          <div class="bars">
+            <div class="b" style="height:40%;background:#ef4444"></div>
+            <div class="b" style="height:65%;background:#f97316"></div>
+            <div class="b" style="height:50%;background:#eab308"></div>
+            <div class="b" style="height:80%;background:#16a34a"></div>
+            <div class="b" style="height:35%;background:#8b5cf6"></div>
+            <div class="b" style="height:60%;background:#dc2626"></div>
+            <div class="b" style="height:72%;background:#2563eb"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">Vista de Administrador: indicadores clave y gráfica de organismos detectados.</div>
+
+  <p>El Dashboard es la primera pantalla que ven el <b>administrador</b> y el <b>asesor</b>. Muestra de un vistazo el estado del laboratorio.</p>
+  <h3>Qué encuentras aquí</h3>
+  <ul>
+    <li><b>Tarjetas superiores:</b> total de clientes, parcelas, análisis realizados y alertas activas de umbrales superados.</li>
+    <li><b>Gráficas:</b> organismos más detectados, tendencias y distribución por tipo de análisis.</li>
+    <li><b>Menú lateral:</b> acceso a todas las secciones según tu rol.</li>
+  </ul>
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 6</span></div>
+</div>
+
+<!-- ════════════ 5. CAPTURA ════════════ -->
+<div class="page">
+  <h2>5 · Captura de muestras</h2>
+  <div class="shot">
+    <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="u">Captura</span></div>
+    <div class="app">
+      <div class="side">
+        <div class="brand"><span class="leaf">🌿</span><div><b>Fermier Lab</b><span>Sistema de muestreo</span></div></div>
+        <div class="nav">
+          <a>📊 Dashboard</a><a>🧪 Reportes</a><a>📈 Comparativa</a><a>🗺️ Mapa</a>
+          <a class="on">➕ Captura</a><a>👥 Portal cliente</a><a>🌱 Fumigación</a><a>🤖 Agente IA</a><a>👤 Usuarios</a><a>⚙️ Configuración</a>
+        </div>
+        <div class="user"><div class="av" style="background:#2563eb">A</div><div><b>Asesor</b><span>Asesor</span></div></div>
+      </div>
+      <div class="main">
+        <div class="pageTitle">Captura de resultados</div>
+        <div class="pageSub">Registra un nuevo análisis de laboratorio</div>
+        <div class="card">
+          <div class="row" style="margin-bottom:8px">
+            <div style="flex:1"><div style="font-size:8px;color:#9ca3af;text-transform:uppercase;font-weight:700;margin-bottom:3px">Cliente</div><div style="border:1px solid #e5e7eb;border-radius:7px;padding:6px;font-size:10px">La Primavera</div></div>
+            <div style="flex:1"><div style="font-size:8px;color:#9ca3af;text-transform:uppercase;font-weight:700;margin-bottom:3px">Parcela / Nave</div><div style="border:1px solid #e5e7eb;border-radius:7px;padding:6px;font-size:10px">Nave 3</div></div>
+          </div>
+          <div class="row" style="margin-bottom:8px">
+            <div style="flex:1"><div style="font-size:8px;color:#9ca3af;text-transform:uppercase;font-weight:700;margin-bottom:3px">Tipo</div><div style="border:1px solid #e5e7eb;border-radius:7px;padding:6px;font-size:10px">Nematodos</div></div>
+            <div style="flex:1"><div style="font-size:8px;color:#9ca3af;text-transform:uppercase;font-weight:700;margin-bottom:3px">Muestreo</div><div style="border:1px solid #e5e7eb;border-radius:7px;padding:6px;font-size:10px">Pre-tratamiento</div></div>
+          </div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table style="margin:0;font-size:9px">
+            <tr><th>Organismo</th><th>C1</th><th>C2</th><th>C3</th><th>Ind/100cc</th></tr>
+            <tr><td>Meloidogyne</td><td>12</td><td>15</td><td>11</td><td style="color:#dc2626;font-weight:700">260 ⚠</td></tr>
+            <tr><td>Pratylenchus</td><td>4</td><td>6</td><td>5</td><td>100</td></tr>
+            <tr><td>Rotylenchulus</td><td>8</td><td>7</td><td>9</td><td>160</td></tr>
+          </table>
+        </div>
+        <div style="background:#16a34a;color:#fff;border-radius:8px;padding:8px;text-align:center;font-size:11px;font-weight:700;margin-top:4px">💾 Guardar análisis</div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">Formulario de captura con tabla de conteos. El sistema calcula automáticamente los individuos por 100cc y marca los que superan el umbral.</div>
+
+  <div class="steps">
+    <div class="step"><div class="num"></div><div class="txt">Selecciona <b>cliente, parcela y nave</b> donde se tomó la muestra.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Elige el <b>tipo de análisis</b> (nematodos o fitopatógenos) y el tipo de muestreo (pre, post o general).</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Captura los <b>conteos</b> de cada organismo. El sistema calcula el promedio y los individuos por 100cc solo.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Los valores que superan el umbral se marcan en <b>rojo con ⚠️</b> automáticamente.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Pulsa <b>Guardar</b>. El análisis queda disponible al instante en reportes y en el portal del cliente.</div></div>
+  </div>
+  <div class="note warn"><p>📄 <b>Atajo:</b> también puedes <b>importar un PDF</b> de resultados y el sistema extrae los datos automáticamente.</p></div>
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 7</span></div>
+</div>
+
+<!-- ════════════ 6. REPORTES ════════════ -->
+<div class="page">
+  <h2>6 · Reportes de laboratorio</h2>
+  <div class="shot">
+    <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="u">Reportes</span></div>
+    <div class="app">
+      <div class="side">
+        <div class="brand"><span class="leaf">🌿</span><div><b>Fermier Lab</b><span>Sistema de muestreo</span></div></div>
+        <div class="nav">
+          <a>📊 Dashboard</a><a class="on">🧪 Reportes</a><a>📈 Comparativa</a><a>🗺️ Mapa</a>
+          <a>➕ Captura</a><a>👥 Portal cliente</a><a>🌱 Fumigación</a><a>🤖 Agente IA</a><a>👤 Usuarios</a><a>⚙️ Configuración</a>
+        </div>
+        <div class="user"><div class="av" style="background:#16a34a">A</div><div><b>Administrador</b><span>Admin</span></div></div>
+      </div>
+      <div class="main">
+        <div class="pageTitle">Reportes</div>
+        <div class="pageSub">148 análisis registrados · filtra por cliente, fecha o tipo</div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table style="margin:0;font-size:9px">
+            <tr><th>Folio</th><th>Cliente</th><th>Nave</th><th>Tipo</th><th>Fecha</th><th>Estado</th></tr>
+            <tr><td>FL-1042</td><td>La Primavera</td><td>Nave 3</td><td>Nematodos</td><td>02/06</td><td><span class="tag" style="background:#dc2626">Alerta</span></td></tr>
+            <tr><td>FL-1041</td><td>El Roble</td><td>Nave 1</td><td>Hongos</td><td>01/06</td><td><span class="tag" style="background:#16a34a">Normal</span></td></tr>
+            <tr><td>FL-1039</td><td>Santa Fe</td><td>Nave 7</td><td>Nematodos</td><td>30/05</td><td><span class="tag" style="background:#16a34a">Normal</span></td></tr>
+            <tr><td>FL-1038</td><td>La Primavera</td><td>Nave 2</td><td>Hongos</td><td>29/05</td><td><span class="tag" style="background:#d97706">Medio</span></td></tr>
+          </table>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <div style="background:#fff;border:1px solid #e5e7eb;border-radius:7px;padding:6px 12px;font-size:10px">🔍 Filtrar</div>
+          <div style="background:#1a3320;color:#fff;border-radius:7px;padding:6px 12px;font-size:10px;font-weight:600">📄 Descargar PDF</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">Listado de todos los análisis con filtros y descarga a PDF.</div>
+
+  <p>La sección de Reportes concentra todos los análisis del laboratorio. Aquí consultas, filtras y exportas resultados.</p>
+  <h3>Funciones principales</h3>
+  <ul>
+    <li><b>Filtros:</b> por cliente, parcela, tipo de análisis, fecha o estado (normal / medio / alerta).</li>
+    <li><b>Detalle:</b> al abrir un análisis ves todos los organismos, conteos y comparación contra umbral.</li>
+    <li><b>Descarga PDF:</b> genera un reporte profesional listo para enviar al cliente.</li>
+  </ul>
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 8</span></div>
+</div>
+
+<!-- ════════════ 7. COMPARATIVA ════════════ -->
+<div class="page">
+  <h2>7 · Comparativa pre / post tratamiento</h2>
+  <div class="shot">
+    <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="u">Comparativa</span></div>
+    <div class="app">
+      <div class="side">
+        <div class="brand"><span class="leaf">🌿</span><div><b>Fermier Lab</b><span>Sistema de muestreo</span></div></div>
+        <div class="nav">
+          <a>📊 Dashboard</a><a>🧪 Reportes</a><a class="on">📈 Comparativa</a><a>🗺️ Mapa</a>
+          <a>➕ Captura</a><a>👥 Portal cliente</a><a>🌱 Fumigación</a><a>🤖 Agente IA</a><a>👤 Usuarios</a><a>⚙️ Configuración</a>
+        </div>
+        <div class="user"><div class="av" style="background:#16a34a">A</div><div><b>Administrador</b><span>Admin</span></div></div>
+      </div>
+      <div class="main">
+        <div class="pageTitle">Comparativa pre / post</div>
+        <div class="pageSub">La Primavera · Nave 3 · Meloidogyne</div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-around;align-items:flex-end;height:150px;padding:10px 30px">
+            <div style="text-align:center">
+              <div style="font-size:9px;color:#6b7280;margin-bottom:4px">Pre</div>
+              <div style="width:55px;height:120px;background:#f97316;border-radius:6px 6px 0 0;display:flex;align-items:flex-start;justify-content:center;color:#fff;font-weight:700;font-size:11px;padding-top:6px">260</div>
+            </div>
+            <div style="font-size:24px;color:#16a34a">→</div>
+            <div style="text-align:center">
+              <div style="font-size:9px;color:#6b7280;margin-bottom:4px">Post</div>
+              <div style="width:55px;height:38px;background:#16a34a;border-radius:6px 6px 0 0;display:flex;align-items:flex-start;justify-content:center;color:#fff;font-weight:700;font-size:11px;padding-top:6px">82</div>
+            </div>
+          </div>
+          <div style="text-align:center;background:#f0fdf4;border-radius:8px;padding:8px;font-size:11px;color:#15803d;font-weight:700;margin-top:6px">✓ Reducción del 68% — tratamiento efectivo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">Comparación visual antes y después de un tratamiento, con porcentaje de reducción.</div>
+
+  <p>Esta es una de las funciones de mayor valor: demuestra con datos si un tratamiento funcionó.</p>
+  <div class="steps">
+    <div class="step"><div class="num"></div><div class="txt">Selecciona la <b>parcela, nave y organismo</b> a comparar.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">El sistema toma el análisis <b>pre-tratamiento</b> y el <b>post-tratamiento</b> y los grafica lado a lado.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Muestra el <b>porcentaje de reducción</b> (o aumento) y si el tratamiento fue efectivo.</div></div>
+  </div>
+  <div class="note"><p>📊 <b>Uso comercial:</b> esta gráfica es ideal para mostrarle al productor el retorno de su inversión en tratamientos.</p></div>
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 9</span></div>
+</div>
+
+<!-- ════════════ 8. MAPA ════════════ -->
+<div class="page">
+  <h2>8 · Mapa de parcelas</h2>
+  <div class="shot">
+    <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="u">Mapa</span></div>
+    <div class="app">
+      <div class="side">
+        <div class="brand"><span class="leaf">🌿</span><div><b>Fermier Lab</b><span>Sistema de muestreo</span></div></div>
+        <div class="nav">
+          <a>📊 Dashboard</a><a>🧪 Reportes</a><a>📈 Comparativa</a><a class="on">🗺️ Mapa</a>
+          <a>➕ Captura</a><a>👥 Portal cliente</a><a>🌱 Fumigación</a><a>🤖 Agente IA</a><a>👤 Usuarios</a><a>⚙️ Configuración</a>
+        </div>
+        <div class="user"><div class="av" style="background:#16a34a">A</div><div><b>Administrador</b><span>Admin</span></div></div>
+      </div>
+      <div class="main" style="padding:0">
+        <div style="height:100%;background:linear-gradient(135deg,#aed581 0%,#7cb342 40%,#558b2f 100%);position:relative">
+          <div style="position:absolute;top:30px;left:40px;width:90px;height:70px;border:3px solid #fff;background:rgba(255,255,255,.25);border-radius:4px"></div>
+          <div style="position:absolute;top:60px;left:160px;width:110px;height:80px;border:3px solid #fbbf24;background:rgba(251,191,36,.25);border-radius:4px"></div>
+          <div style="position:absolute;top:150px;left:80px;width:100px;height:75px;border:3px solid #ef4444;background:rgba(239,68,68,.3);border-radius:4px"></div>
+          <div style="position:absolute;top:40px;left:80px;font-size:18px">📍</div>
+          <div style="position:absolute;top:90px;left:210px;font-size:18px">📍</div>
+          <div style="position:absolute;top:175px;left:120px;font-size:18px">📍</div>
+          <div style="position:absolute;bottom:12px;left:12px;background:#fff;border-radius:8px;padding:8px 12px;font-size:9px;box-shadow:0 2px 8px rgba(0,0,0,.2)">
+            <div style="font-weight:700;color:#1a3320;margin-bottom:4px">Parcelas · La Primavera</div>
+            <div>🟢 Normal &nbsp; 🟡 Medio &nbsp; 🔴 Alerta</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">Mapa satelital con polígonos de parcelas y puntos de muestreo coloreados según su estado.</div>
+
+  <p>El mapa ubica geográficamente las parcelas, naves y puntos de muestreo sobre imagen satelital.</p>
+  <h3>Qué muestra</h3>
+  <ul>
+    <li><b>Polígonos:</b> el contorno de cada parcela dibujado sobre el mapa.</li>
+    <li><b>Puntos de muestreo:</b> marcadores de color según el estado del análisis (verde / amarillo / rojo).</li>
+    <li><b>Detalle al tocar:</b> al hacer clic en un punto ves el último resultado de esa ubicación.</li>
+  </ul>
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 10</span></div>
+</div>
+
+<!-- ════════════ 9. PORTAL CLIENTE ════════════ -->
+<div class="page">
+  <h2>9 · Portal del cliente</h2>
+  <div class="shot">
+    <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="u">Portal del cliente</span></div>
+    <div class="app">
+      <div class="side">
+        <div class="brand"><span class="leaf">🌿</span><div><b>Fermier Lab</b><span>Sistema de muestreo</span></div></div>
+        <div class="nav">
+          <a class="on">👥 Portal cliente</a>
+          <a>🤖 Agente IA</a>
+        </div>
+        <div class="user"><div class="av">J</div><div><b>La Primavera</b><span>Cliente</span></div></div>
+      </div>
+      <div class="main">
+        <div class="pageTitle">Mis resultados</div>
+        <div class="pageSub">La Primavera · Cultivo: Tomate</div>
+        <div class="row" style="margin-bottom:10px">
+          <div class="stat"><div class="n">3</div><div class="l">Parcelas</div></div>
+          <div class="stat"><div class="n">28</div><div class="l">Análisis</div></div>
+          <div class="stat"><div class="n" style="color:#dc2626">2</div><div class="l">Alertas</div></div>
+        </div>
+        <div class="card" style="border-left:4px solid #dc2626">
+          <div style="font-size:10px;font-weight:700;color:#dc2626;margin-bottom:3px">⚠️ Meloidogyne — Nave 3</div>
+          <div style="font-size:9px;color:#6b7280">260 ind/100cc (umbral 200) — Acción recomendada</div>
+        </div>
+        <div class="card">
+          <div style="font-size:10px;font-weight:700;color:#1a3320;margin-bottom:6px">Evolución últimos análisis</div>
+          <div class="bars" style="height:70px">
+            <div class="b" style="height:90%;background:#f97316"></div>
+            <div class="b" style="height:55%;background:#eab308"></div>
+            <div class="b" style="height:30%;background:#16a34a"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">Vista del Cliente: solo ve sus propias parcelas, análisis y alertas.</div>
+
+  <p>El portal del cliente es la cara que ve el productor. Es una versión simplificada y enfocada solo en <b>sus</b> datos.</p>
+  <h3>Qué ve el cliente</h3>
+  <ul>
+    <li>Resumen de sus parcelas, total de análisis y alertas activas.</li>
+    <li>Sus resultados con gráficas de evolución a lo largo del tiempo.</li>
+    <li>Alertas claras cuando un organismo supera el umbral en alguna de sus naves.</li>
+    <li>Botón para <b>descargar su reporte en PDF</b> y para <b>contactar</b> al laboratorio.</li>
+  </ul>
+  <div class="note danger"><p>🔒 <b>Privacidad:</b> cada cliente ve únicamente su información. Nunca tiene acceso a datos de otros productores.</p></div>
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 11</span></div>
+</div>
+
+<!-- ════════════ 10. FUMIGACIÓN ════════════ -->
+<div class="page">
+  <h2>10 · Fumigación con GPS</h2>
+  <div class="shot" style="max-width:300px;margin:10px auto 6px">
+    <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="u">📱 Operador</span></div>
+    <div style="height:380px;background:#0f1f14;position:relative;color:#fff">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,#1a3320,#0f1f14)"></div>
+      <svg style="position:absolute;inset:0" width="100%" height="100%"><polyline points="60,320 90,260 140,250 180,190 150,130 200,90 250,70" style="fill:none;stroke:#22c55e;stroke-width:4;stroke-linecap:round"/></svg>
+      <div style="position:absolute;top:62px;left:244px;font-size:16px">🟢</div>
+      <div style="position:absolute;bottom:54px;left:48px;width:14px;height:14px;background:#ef4444;border-radius:50%;border:2px solid #fff"></div>
+      <div style="position:absolute;top:14px;left:14px;right:14px;background:rgba(0,0,0,.5);border-radius:10px;padding:10px;display:flex;justify-content:space-around">
+        <div style="text-align:center"><div style="font-size:8px;color:#86efac">⏱ Tiempo</div><div style="font-size:15px;font-weight:800">14:32</div></div>
+        <div style="text-align:center"><div style="font-size:8px;color:#86efac">📏 Distancia</div><div style="font-size:15px;font-weight:800">1,240 m</div></div>
+      </div>
+      <div style="position:absolute;bottom:14px;left:14px;right:14px;background:#dc2626;border-radius:10px;padding:11px;text-align:center;font-weight:700;font-size:12px">⏹ Terminar recorrido</div>
+    </div>
+  </div>
+  <div class="cap">Vista del Operador en celular: rastrea la ruta de fumigación en tiempo real.</div>
+
+  <p>Esta función resuelve un problema real: comprobar que los trabajadores fumiguen la parcela <b>completa</b>. El operador abre la app en su celular y registra su recorrido por GPS.</p>
+  <div class="steps">
+    <div class="step"><div class="num"></div><div class="txt">El operador entra con su cuenta y la app lo lleva directo a <b>Fumigación</b>.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Pulsa <b>"Iniciar"</b> y selecciona la parcela. La app empieza a rastrear su ubicación.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Mientras camina fumigando, la <b>ruta verde</b> se dibuja sobre el mapa y se acumulan tiempo y distancia.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Al terminar pulsa <b>"Terminar"</b>. El recorrido queda guardado en el historial con su distancia total.</div></div>
+  </div>
+  <div class="note"><p>📍 <b>Beneficio:</b> el laboratorio y el cliente pueden ver la cobertura real de cada fumigación y detectar zonas no atendidas.</p></div>
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 12</span></div>
+</div>
+
+<!-- ════════════ 11. FERMIERBOT ════════════ -->
+<div class="page">
+  <h2>11 · FermierBot — Asesor con IA</h2>
+  <div class="shot" style="max-width:340px;margin:10px auto 6px">
+    <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="u">FermierBot</span></div>
+    <div style="background:#f9fafb;height:400px;display:flex;flex-direction:column">
+      <div style="background:#1a3320;color:#fff;padding:12px;display:flex;gap:8px;align-items:center">
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(134,239,172,.2);display:flex;align-items:center;justify-content:center">🌱</div>
+        <div><b style="font-size:12px">FermierBot</b><div style="font-size:8px;color:#86efac">Asesor agrícola IA</div></div>
+      </div>
+      <div style="flex:1;padding:12px;overflow:hidden">
+        <div style="display:flex;gap:6px;margin-bottom:10px">
+          <div style="width:22px;height:22px;border-radius:50%;background:#1a3320;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">🤖</div>
+          <div style="background:#fff;border-radius:12px;border-top-left-radius:2px;padding:9px;font-size:9.5px;box-shadow:0 1px 3px rgba(0,0,0,.06);max-width:78%">¡Hola! Soy FermierBot 🌱 Mándame una foto de tu planta o pregúntame sobre plagas y tratamientos.</div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+          <div style="background:#1a3320;color:#fff;border-radius:12px;border-top-right-radius:2px;padding:8px;font-size:9.5px;max-width:70%">📷 Foto de hoja con manchas negras</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <div style="width:22px;height:22px;border-radius:50%;background:#1a3320;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">🤖</div>
+          <div style="background:#fff;border-radius:12px;border-top-left-radius:2px;padding:9px;font-size:9px;box-shadow:0 1px 3px rgba(0,0,0,.06);max-width:78%">
+            <b style="color:#1a3320">🔍 Observación:</b> manchas negras puntiformes en la hoja.<br>
+            <b style="color:#1a3320">🦠 Posible:</b> mancha bacteriana (Xanthomonas).<br>
+            <b style="color:#dc2626">🚦 Urgencia:</b> 🟡 Moderada<br>
+            <b style="color:#1a3320">⚡ Acción:</b> reducir riego por aspersión y aplicar cobre.
+          </div>
+        </div>
+      </div>
+      <div style="padding:10px;background:#fff;border-top:1px solid #eee;display:flex;gap:6px;align-items:center">
+        <div style="width:28px;height:28px;border-radius:8px;background:#f3f4f6;display:flex;align-items:center;justify-content:center">📷</div>
+        <div style="flex:1;background:#f3f4f6;border-radius:20px;padding:7px 12px;font-size:9px;color:#9ca3af">Pregunta sobre tu cultivo…</div>
+        <div style="width:28px;height:28px;border-radius:8px;background:#1a3320;display:flex;align-items:center;justify-content:center">➤</div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">FermierBot diagnostica por foto y propone planes de tratamiento en lenguaje del productor.</div>
+
+  <p>FermierBot es un asesor agrícola con inteligencia artificial (Claude Vision) disponible <b>24/7</b> en toda la plataforma. Está disponible como botón flotante y como página dedicada con historial.</p>
+  <h3>Qué puede hacer</h3>
+  <ul>
+    <li><b>Diagnóstico por foto:</b> el productor sube una foto de su planta y el bot identifica posibles enfermedades.</li>
+    <li><b>Planes de tratamiento:</b> propone opciones biológicas y químicas con dosis y momento de aplicación.</li>
+    <li><b>Lenguaje del campo:</b> entiende términos sinaloenses ("mata", "le cayó la cenicilla", "está cargando").</li>
+    <li><b>Conoce tus datos:</b> si hay umbrales superados en el sistema, los menciona y sugiere acciones.</li>
+    <li><b>Historial:</b> guarda todas las conversaciones para llevar control.</li>
+  </ul>
+  <div class="note warn"><p>⚠️ FermierBot es una herramienta de apoyo. Siempre confirmar dosis y tratamientos con el técnico responsable.</p></div>
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 13</span></div>
+</div>
+
+<!-- ════════════ 12. CONFIGURACIÓN ════════════ -->
+<div class="page">
+  <h2>12 · Configuración y gestión de datos</h2>
+  <div class="shot">
+    <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="u">Configuración</span></div>
+    <div class="app">
+      <div class="side">
+        <div class="brand"><span class="leaf">🌿</span><div><b>Fermier Lab</b><span>Sistema de muestreo</span></div></div>
+        <div class="nav">
+          <a>📊 Dashboard</a><a>🧪 Reportes</a><a>📈 Comparativa</a><a>🗺️ Mapa</a>
+          <a>➕ Captura</a><a>👥 Portal cliente</a><a>🌱 Fumigación</a><a>🤖 Agente IA</a><a>👤 Usuarios</a><a class="on">⚙️ Configuración</a>
+        </div>
+        <div class="user"><div class="av" style="background:#16a34a">A</div><div><b>Administrador</b><span>Admin</span></div></div>
+      </div>
+      <div class="main">
+        <div class="pageTitle">Configuración</div>
+        <div class="pageSub">Gestiona clientes, parcelas y naves</div>
+        <div style="background:#16a34a;color:#fff;border-radius:8px;padding:8px;text-align:center;font-size:11px;font-weight:700;margin-bottom:10px">➕ Nuevo cliente</div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table style="margin:0;font-size:9px">
+            <tr><th>Cliente</th><th>Cultivo</th><th>Parcelas</th><th></th></tr>
+            <tr><td>La Primavera</td><td>Tomate</td><td>3</td><td>✏️ 🗑️</td></tr>
+            <tr><td>El Roble</td><td>Chile</td><td>5</td><td>✏️ 🗑️</td></tr>
+            <tr><td>Santa Fe</td><td>Pepino</td><td>2</td><td>✏️ 🗑️</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">Panel de Configuración (solo Administrador): alta y edición de clientes, parcelas y naves.</div>
+
+  <p>Solo el <b>administrador</b> accede a Configuración. Aquí se da de alta toda la estructura de datos.</p>
+  <h3>Crear un cliente nuevo</h3>
+  <div class="steps">
+    <div class="step"><div class="num"></div><div class="txt">Pulsa <b>"Nuevo cliente"</b>. Se abre un asistente paso a paso.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Captura <b>nombre, cultivo, correo, teléfono y negocio</b> del productor.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Agrega sus <b>parcelas</b> y las <b>naves</b> (invernaderos) de cada parcela.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Guarda. El cliente ya puede recibir análisis y, si le creas acceso, entrar a su portal.</div></div>
+  </div>
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 14</span></div>
+</div>
+
+<!-- ════════════ 13. GESTIÓN USUARIOS ════════════ -->
+<div class="page">
+  <h2>13 · Gestión de usuarios (panel admin)</h2>
+  <p>El administrador crea y edita los usuarios <b>desde la propia app</b>, en la sección <b>Usuarios</b> del menú. No hace falta entrar a paneles externos.</p>
+
+  <div class="shot">
+    <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="u">Usuarios</span></div>
+    <div class="app">
+      <div class="side">
+        <div class="brand"><span class="leaf">🌿</span><div><b>Fermier Lab</b><span>Sistema de muestreo</span></div></div>
+        <div class="nav">
+          <a>📊 Dashboard</a><a>🧪 Reportes</a><a>📈 Comparativa</a><a>🗺️ Mapa</a>
+          <a>➕ Captura</a><a>👥 Portal cliente</a><a>🌱 Fumigación</a><a>🤖 Agente IA</a><a class="on">👤 Usuarios</a><a>⚙️ Configuración</a>
+        </div>
+        <div class="user"><div class="av" style="background:#16a34a">A</div><div><b>Administrador</b><span>Admin</span></div></div>
+      </div>
+      <div class="main">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+          <div><div class="pageTitle">Gestión de usuarios</div><div class="pageSub">Crea, edita roles y asigna clientes</div></div>
+          <div style="background:#1a3320;color:#fff;border-radius:8px;padding:6px 11px;font-size:10px;font-weight:700">＋ Nuevo usuario</div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table style="margin:0;font-size:9px">
+            <tr><th>Usuario</th><th>Rol</th><th>Cliente</th><th></th></tr>
+            <tr><td>Karina Lara<br><span style="color:#9ca3af">nutricionkarinalara@gmail.com</span></td><td><span class="tag" style="background:#2563eb">Asesor</span></td><td>—</td><td>🗑️</td></tr>
+            <tr><td>Administrador<br><span style="color:#9ca3af">ctaj.vega89@gmail.com</span></td><td><span class="tag" style="background:#16a34a">Admin</span></td><td>—</td><td>🗑️</td></tr>
+            <tr><td>Operador<br><span style="color:#9ca3af">deltakilo.vela@gmail.com</span></td><td><span class="tag" style="background:#d97706">Operador</span></td><td>—</td><td>🗑️</td></tr>
+            <tr><td>La Primavera<br><span style="color:#9ca3af">cliente@laprimavera.com</span></td><td><span class="tag" style="background:#7c3aed">Cliente</span></td><td>La Primavera</td><td>🗑️</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">Panel "Usuarios" (solo admin): alta, cambio de rol/cliente y borrado, todo dentro de la app.</div>
+
+  <h3>Crear y editar usuarios</h3>
+  <div class="steps">
+    <div class="step"><div class="num"></div><div class="txt">Abre <b>Usuarios</b> en el menú (solo visible para el administrador).</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Pulsa <b>"Nuevo usuario"</b>: captura correo, contraseña y rol. Si es <b>cliente</b>, eliges el cliente asociado.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Cambia el <b>rol</b> o el <b>cliente</b> de cualquiera con los menús desplegables de la tabla.</div></div>
+    <div class="step"><div class="num"></div><div class="txt">Borra un usuario con el ícono de <b>papelera</b>.</div></div>
+  </div>
+
+  <div class="note"><p>👥 <b>Varios accesos al mismo cliente:</b> crea varios usuarios con rol "Cliente" y el mismo cliente asociado — todos verán ese portal.</p></div>
+  <div class="note warn"><p>🔁 Los cambios de rol aplican la próxima vez que el usuario inicie sesión.</p></div>
+
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 15</span></div>
+</div>
+
+<!-- ════════════ 14. MÉTODO DE USO POR USUARIO ════════════ -->
+<div class="page">
+  <h2>14 · Método de uso por tipo de usuario</h2>
+  <p>Cómo trabaja cada rol en el día a día. Al iniciar sesión, la plataforma lleva a cada usuario directo a la pantalla que le corresponde.</p>
+
+  <div class="row" style="gap:12px;margin-top:12px">
+    <!-- Admin -->
+    <div class="card" style="flex:1;border-top:4px solid #16a34a">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="width:12px;height:12px;border-radius:50%;background:#16a34a;display:inline-block"></span>
+        <b style="color:#1a3320;font-size:13px">👨‍💼 Administrador</b>
+      </div>
+      <p style="font-size:11px;margin-bottom:6px"><b>Entra al Dashboard.</b> Controla todo el laboratorio.</p>
+      <div class="steps" style="margin:0">
+        <div class="step" style="margin-bottom:7px"><div class="num"></div><div class="txt" style="font-size:11px">Da de alta <b>clientes, parcelas y naves</b> en Configuración.</div></div>
+        <div class="step" style="margin-bottom:7px"><div class="num"></div><div class="txt" style="font-size:11px">Crea los <b>accesos</b> y asigna roles a su equipo.</div></div>
+        <div class="step" style="margin-bottom:7px"><div class="num"></div><div class="txt" style="font-size:11px">Captura o <b>importa</b> análisis de laboratorio.</div></div>
+        <div class="step" style="margin-bottom:0"><div class="num"></div><div class="txt" style="font-size:11px">Vigila el <b>Dashboard</b> y atiende las alertas de umbrales.</div></div>
+      </div>
+    </div>
+    <!-- Asesor -->
+    <div class="card" style="flex:1;border-top:4px solid #2563eb">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="width:12px;height:12px;border-radius:50%;background:#2563eb;display:inline-block"></span>
+        <b style="color:#1a3320;font-size:13px">🔬 Asesor de campo</b>
+      </div>
+      <p style="font-size:11px;margin-bottom:6px"><b>Entra al Dashboard.</b> Opera en campo, sin configuración.</p>
+      <div class="steps" style="margin:0">
+        <div class="step" style="margin-bottom:7px"><div class="num"></div><div class="txt" style="font-size:11px"><b>Captura</b> los resultados del muestreo.</div></div>
+        <div class="step" style="margin-bottom:7px"><div class="num"></div><div class="txt" style="font-size:11px">Consulta <b>reportes</b> y la <b>comparativa</b> pre/post.</div></div>
+        <div class="step" style="margin-bottom:7px"><div class="num"></div><div class="txt" style="font-size:11px">Usa el <b>mapa</b> para ubicar parcelas y puntos.</div></div>
+        <div class="step" style="margin-bottom:0"><div class="num"></div><div class="txt" style="font-size:11px">Apoya al cliente con el <b>FermierBot</b>.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="gap:12px;margin-top:12px">
+    <!-- Operador -->
+    <div class="card" style="flex:1;border-top:4px solid #d97706">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="width:12px;height:12px;border-radius:50%;background:#d97706;display:inline-block"></span>
+        <b style="color:#1a3320;font-size:13px">🌱 Operador / Fumigador</b>
+      </div>
+      <p style="font-size:11px;margin-bottom:6px"><b>Entra directo a Fumigación</b> (desde el celular).</p>
+      <div class="steps" style="margin:0">
+        <div class="step" style="margin-bottom:7px"><div class="num"></div><div class="txt" style="font-size:11px">Inicia sesión y pulsa <b>"Iniciar"</b>.</div></div>
+        <div class="step" style="margin-bottom:7px"><div class="num"></div><div class="txt" style="font-size:11px">Elige la <b>parcela</b> a fumigar.</div></div>
+        <div class="step" style="margin-bottom:7px"><div class="num"></div><div class="txt" style="font-size:11px">Fumiga mientras la <b>ruta se graba por GPS</b>.</div></div>
+        <div class="step" style="margin-bottom:0"><div class="num"></div><div class="txt" style="font-size:11px">Pulsa <b>"Terminar"</b>; queda el registro de cobertura.</div></div>
+      </div>
+    </div>
+    <!-- Cliente -->
+    <div class="card" style="flex:1;border-top:4px solid #7c3aed">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="width:12px;height:12px;border-radius:50%;background:#7c3aed;display:inline-block"></span>
+        <b style="color:#1a3320;font-size:13px">🏢 Cliente / Productor</b>
+      </div>
+      <p style="font-size:11px;margin-bottom:6px"><b>Entra a su Portal.</b> Solo ve su información.</p>
+      <div class="steps" style="margin:0">
+        <div class="step" style="margin-bottom:7px"><div class="num"></div><div class="txt" style="font-size:11px">Revisa sus <b>parcelas y análisis</b>.</div></div>
+        <div class="step" style="margin-bottom:7px"><div class="num"></div><div class="txt" style="font-size:11px">Atiende las <b>alertas</b> de umbrales superados.</div></div>
+        <div class="step" style="margin-bottom:7px"><div class="num"></div><div class="txt" style="font-size:11px">Consulta la <b>comparativa</b> de sus tratamientos.</div></div>
+        <div class="step" style="margin-bottom:0"><div class="num"></div><div class="txt" style="font-size:11px">Usa el <b>FermierBot</b> y <b>descarga su reporte</b> PDF.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note"><p>🧭 <b>Acceso por rol:</b> Admin y Asesor → Dashboard · Operador → Fumigación · Cliente → Portal. El sistema redirige automáticamente según el rol asignado en su cuenta.</p></div>
+
+  <div class="foot"><span>Guía de Usuario · Fermier Lab</span><span>Página 16</span></div>
+</div>
+
+<!-- ════════════ CIERRE ════════════ -->
+<div class="page cover" style="justify-content:center;text-align:center;align-items:center">
+  <div>
+    <div class="logo" style="margin:0 auto 26px">🌿</div>
+    <h1 style="color:#fff;font-size:30px">Fermier Lab</h1>
+    <div class="sub" style="margin-bottom:30px">Tecnología agrícola para Sinaloa</div>
+    <div style="color:rgba(255,255,255,.7);font-size:13px;line-height:1.9">
+      Esta guía corresponde a la versión 1.3 de la plataforma.<br>
+      Para soporte o nuevas funciones, contacta al equipo de desarrollo.
+    </div>
+    <div class="pill" style="margin-top:30px">Culiacán, Sinaloa · 2026</div>
+  </div>
+</div>
+
+</body>
+</html>

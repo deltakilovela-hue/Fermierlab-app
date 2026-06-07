@@ -66,7 +66,7 @@ function RequireAuth() {
   if (!isLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f1f5f1]">
-        <div className="w-8 h-8 rounded-full border-4 border-[#1a3320]/20 border-t-[#1a3320] animate-spin" />
+        <div className="w-8 h-8 rounded-full border-4 border-[#1769a5]/20 border-t-[#1769a5] animate-spin" />
       </div>
     );
   }

@@ -133,11 +133,11 @@ export default function Usuarios() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#1a3320]/8 flex items-center justify-center">
-            <Users size={20} className="text-[#1a3320]" />
+          <div className="w-10 h-10 rounded-xl bg-[#1769a5]/8 flex items-center justify-center">
+            <Users size={20} className="text-[#1769a5]" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-[#1a3320]">Gestión de usuarios</h1>
+            <h1 className="text-xl font-bold text-[#1769a5]">Gestión de usuarios</h1>
             <p className="text-xs text-gray-400">Crea, edita roles y asigna clientes — sin salir de la app</p>
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function Usuarios() {
           </button>
           <button
             onClick={() => { setShowForm((v) => !v); setError(''); }}
-            className="flex items-center gap-2 bg-[#1a3320] hover:bg-[#254830] text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
+            className="flex items-center gap-2 bg-[#1769a5] hover:bg-[#11537f] text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
           >
             <UserPlus size={16} /> Nuevo usuario
           </button>
@@ -169,7 +169,7 @@ export default function Usuarios() {
       {/* Form nuevo usuario */}
       {showForm && (
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 mb-5">
-          <p className="text-sm font-bold text-[#1a3320] mb-4 flex items-center gap-2"><UserPlus size={15} /> Crear usuario</p>
+          <p className="text-sm font-bold text-[#1769a5] mb-4 flex items-center gap-2"><UserPlus size={15} /> Crear usuario</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Field label="Correo" value={fCorreo} onChange={setFCorreo} placeholder="correo@ejemplo.com" type="email" />
             <Field label="Nombre (opcional)" value={fNombre} onChange={setFNombre} placeholder="Nombre del usuario" />

@@ -1,10 +1,11 @@
 import { NavLink, Outlet, Navigate } from 'react-router-dom';
 import {
-  BarChart3, FlaskConical, PlusCircle, Leaf, Map,
+  BarChart3, FlaskConical, PlusCircle, Map,
   GitCompare, Settings, Users, Sprout, Bot, UserCog,
 } from 'lucide-react';
 import { UserButton } from '@clerk/react';
 import { useStore } from '../store/useStore';
+import Logo from './Logo';
 import type { Rol } from '../types';
 
 // ── Nav items por rol ─────────────────────────────────────────────────────────
@@ -42,15 +43,11 @@ export default function Layout() {
     <div className="flex min-h-screen bg-[#f1f5f1]">
 
       {/* ── Sidebar ──────────────────────────────────────────────────────────── */}
-      <aside className="w-56 bg-[#1a3320] text-white flex flex-col shrink-0">
+      <aside className="w-56 bg-[#1769a5] text-white flex flex-col shrink-0">
 
         {/* Brand */}
-        <div className="flex items-center gap-2 px-5 py-5 border-b border-white/10">
-          <Leaf size={22} className="text-green-300" />
-          <div>
-            <p className="font-bold text-sm leading-tight">Fermier Lab</p>
-            <p className="text-[11px] text-green-300 leading-tight">Sistema de muestreo</p>
-          </div>
+        <div className="px-5 py-5 border-b border-white/15">
+          <Logo variant="dark" size={22} />
         </div>
 
         {/* Nav */}
@@ -63,8 +60,8 @@ export default function Layout() {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
                   isActive
-                    ? 'bg-green-600 text-white font-medium'
-                    : 'text-green-100 hover:bg-white/10'
+                    ? 'bg-[#3aa935] text-white font-medium shadow-sm'
+                    : 'text-white/80 hover:bg-white/10'
                 }`
               }
             >
@@ -91,13 +88,13 @@ export default function Layout() {
             />
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold text-white truncate">{sesion.nombre}</p>
-              <p className="text-[10px] text-green-300 truncate">{rolLabel[sesion.rol]}</p>
+              <p className="text-[10px] text-white/60 truncate">{rolLabel[sesion.rol]}</p>
             </div>
           </div>
 
           <div className="mt-3 px-2">
-            <p className="text-[10px] text-green-400">Culiacán, Sinaloa</p>
-            <p className="text-[10px] text-white/30">v1.3.0 — Fase 4</p>
+            <p className="text-[10px] text-white/50">Culiacán, Sinaloa</p>
+            <p className="text-[10px] text-white/30">v1.4.0 — Fermier</p>
           </div>
         </div>
       </aside>

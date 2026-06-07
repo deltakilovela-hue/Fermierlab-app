@@ -148,7 +148,7 @@ export default function Comparativa() {
     <div className="p-6 space-y-6 max-w-5xl">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-bold text-[#1a3320]">Comparativa pre/post tratamiento</h1>
+        <h1 className="text-xl font-bold text-[#1769a5]">Comparativa pre/post tratamiento</h1>
         <p className="text-sm text-gray-500">Evalúa la eficacia del tratamiento comparando los resultados antes y después</p>
       </div>
 
@@ -174,7 +174,7 @@ export default function Comparativa() {
                   key={t}
                   onClick={() => setTipo(t)}
                   className={`flex-1 text-xs font-medium transition-colors ${
-                    tipo === t ? 'bg-[#1a3320] text-white' : 'bg-white text-gray-600 hover:bg-gray-50'
+                    tipo === t ? 'bg-[#1769a5] text-white' : 'bg-white text-gray-600 hover:bg-gray-50'
                   }`}
                 >
                   {t === 'nematodos' ? 'Nematodos' : 'Fitopatógenos'}

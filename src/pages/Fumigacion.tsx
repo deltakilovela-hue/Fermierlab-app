@@ -211,7 +211,7 @@ export default function Fumigacion() {
     <div className="flex flex-col h-screen bg-[#0f1f14] text-white overflow-hidden">
 
       {/* ── Header ───────────────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between px-4 py-3 bg-[#1a3320] border-b border-white/10 shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 bg-[#1769a5] border-b border-white/10 shrink-0">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-xl bg-amber-500/20 flex items-center justify-center">
             <Navigation size={16} className="text-amber-400" />
@@ -229,7 +229,7 @@ export default function Fumigacion() {
           <button
             onClick={() => setTab('nueva')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-              tab === 'nueva' ? 'bg-white text-[#1a3320]' : 'text-white/60 hover:text-white'
+              tab === 'nueva' ? 'bg-white text-[#1769a5]' : 'text-white/60 hover:text-white'
             }`}
           >
             Nueva
@@ -237,13 +237,13 @@ export default function Fumigacion() {
           <button
             onClick={() => setTab('historial')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-              tab === 'historial' ? 'bg-white text-[#1a3320]' : 'text-white/60 hover:text-white'
+              tab === 'historial' ? 'bg-white text-[#1769a5]' : 'text-white/60 hover:text-white'
             }`}
           >
             <History size={12} />
             Historial
             {historial.length > 0 && (
-              <span className="bg-amber-400 text-[#1a3320] rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold">
+              <span className="bg-amber-400 text-[#1769a5] rounded-full w-4 h-4 flex items-center justify-center text-[10px] font-bold">
                 {historial.length}
               </span>
             )}
@@ -257,7 +257,7 @@ export default function Fumigacion() {
 
           {/* Selectores */}
           {estado === 'idle' && (
-            <div className="flex gap-3 px-4 py-3 bg-[#1a3320]/60 shrink-0">
+            <div className="flex gap-3 px-4 py-3 bg-[#1769a5]/60 shrink-0">
               {/* Parcela */}
               <div className="flex-1 relative">
                 <select
@@ -371,7 +371,7 @@ export default function Fumigacion() {
             {/* ── Pantalla de completado ────────────────────────────────────── */}
             {estado === 'done' && (
               <div className="absolute inset-0 z-[1000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-6">
-                <div className="bg-[#1a3320] rounded-3xl p-8 w-full max-w-sm text-center shadow-2xl">
+                <div className="bg-[#1769a5] rounded-3xl p-8 w-full max-w-sm text-center shadow-2xl">
                   <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
                     <CheckCircle2 size={36} className="text-green-400" />
                   </div>
@@ -415,7 +415,7 @@ export default function Fumigacion() {
           )}
 
           {/* ── Botones de acción ─────────────────────────────────────────── */}
-          <div className="px-4 py-4 bg-[#1a3320]/80 border-t border-white/10 shrink-0">
+          <div className="px-4 py-4 bg-[#1769a5]/80 border-t border-white/10 shrink-0">
             {estado === 'idle' && (
               <button
                 onClick={iniciar}
@@ -455,7 +455,7 @@ export default function Fumigacion() {
       {tab === 'historial' && (
         <div className="flex-1 overflow-y-auto">
           {/* Selector de parcela en historial */}
-          <div className="px-4 py-3 bg-[#1a3320]/60 border-b border-white/10 sticky top-0 z-10">
+          <div className="px-4 py-3 bg-[#1769a5]/60 border-b border-white/10 sticky top-0 z-10">
             <div className="relative">
               <select
                 value={parcelaId}

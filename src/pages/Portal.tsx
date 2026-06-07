@@ -18,8 +18,9 @@ import type { PdfDetalleRow, ReporteData } from '../utils/exportPdf';
 import {
   MessageCircle, FileDown, ChevronDown, MapPin, BarChart3,
   GitCompare, Loader2, Building2, AlertCircle, CheckCircle2,
-  FlaskConical, Leaf,
+  FlaskConical,
 } from 'lucide-react';
+import Logo from '../components/Logo';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -83,10 +84,10 @@ function Section({
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
       <div className="flex items-center gap-2.5 px-5 py-4 border-b border-gray-100">
-        <div className="w-7 h-7 rounded-lg bg-[#1a3320]/8 flex items-center justify-center">
-          <Icon size={14} className="text-[#1a3320]" />
+        <div className="w-7 h-7 rounded-lg bg-[#1769a5]/8 flex items-center justify-center">
+          <Icon size={14} className="text-[#1769a5]" />
         </div>
-        <h2 className="text-sm font-bold text-[#1a3320] flex-1">{title}</h2>
+        <h2 className="text-sm font-bold text-[#1769a5] flex-1">{title}</h2>
         {badge}
       </div>
       {children}
@@ -332,17 +333,12 @@ export default function Portal() {
     <div className="min-h-screen bg-[#f1f5f1]">
 
       {/* ── Header ─────────────────────────────────────────────────────────────── */}
-      <div className="sticky top-0 z-30 bg-[#1a3320] text-white shadow-lg">
+      <div className="sticky top-0 z-30 bg-[#1769a5] text-white shadow-lg">
         <div className="max-w-5xl mx-auto px-5 py-3 flex items-center gap-4">
           {/* Brand */}
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 rounded-xl bg-green-500/20 flex items-center justify-center">
-              <Leaf size={16} className="text-green-300" />
-            </div>
-            <div className="hidden sm:block">
-              <p className="text-sm font-bold leading-none">Fermier Lab</p>
-              <p className="text-[10px] text-green-300 leading-none mt-0.5">Portal del cliente</p>
-            </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <Logo variant="dark" size={18} tagline={false} />
+            <span className="hidden sm:block text-[11px] text-white/60 border-l border-white/20 pl-3">Portal del cliente</span>
           </div>
 
           {/* Cliente selector — solo visible para admin/asesor */}
@@ -716,8 +712,8 @@ export default function Portal() {
             <button
               onClick={handleExport}
               disabled={exporting || misAnalisis.length === 0}
-              className="flex-1 flex items-center justify-center gap-2 bg-[#1a3320] text-white
-                px-6 py-4 rounded-2xl text-sm font-bold hover:bg-[#254830]
+              className="flex-1 flex items-center justify-center gap-2 bg-[#1769a5] text-white
+                px-6 py-4 rounded-2xl text-sm font-bold hover:bg-[#11537f]
                 transition-colors shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {exporting

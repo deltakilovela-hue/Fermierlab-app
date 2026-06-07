@@ -206,7 +206,7 @@ export default function AgenteIA() {
         <button
           onClick={() => setAbierto(true)}
           className="fixed bottom-6 right-6 z-[2000] w-14 h-14 rounded-full
-            bg-[#1a3320] hover:bg-[#254830] text-white shadow-2xl shadow-green-900/40
+            bg-[#1769a5] hover:bg-[#11537f] text-white shadow-2xl shadow-green-900/40
             flex items-center justify-center transition-all hover:scale-110 active:scale-95"
           title="FermierBot — Asesor IA agrícola"
         >
@@ -231,7 +231,7 @@ export default function AgenteIA() {
           style={{ height: 'min(620px, calc(100vh - 2.5rem))' }}
         >
           {/* ── Header ──────────────────────────────────────────────────────── */}
-          <div className="flex items-center gap-3 px-4 py-3.5 bg-[#1a3320] text-white shrink-0">
+          <div className="flex items-center gap-3 px-4 py-3.5 bg-[#1769a5] text-white shrink-0">
             <div className="w-9 h-9 rounded-xl bg-green-500/20 flex items-center justify-center">
               <Sprout size={18} className="text-green-300" />
             </div>
@@ -260,11 +260,11 @@ export default function AgenteIA() {
             {/* Saludo + sugerencias */}
             {mensajes.length === 0 && (
               <div className="flex gap-2.5">
-                <div className="w-7 h-7 rounded-full bg-[#1a3320] flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-7 h-7 rounded-full bg-[#1769a5] flex items-center justify-center shrink-0 mt-0.5">
                   <Bot size={14} className="text-green-300" />
                 </div>
                 <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm max-w-[88%]">
-                  <p className="font-semibold text-[#1a3320] text-sm mb-1">¡Hola! Soy FermierBot 🌱</p>
+                  <p className="font-semibold text-[#1769a5] text-sm mb-1">¡Hola! Soy FermierBot 🌱</p>
                   <p className="text-gray-500 text-xs leading-relaxed mb-3">
                     Pregúntame sobre tus cultivos, enfermedades o manda una foto de tu planta
                     y te digo qué le pasa.
@@ -305,14 +305,14 @@ export default function AgenteIA() {
             {mensajes.map((m, i) => (
               <div key={i} className={`flex gap-2.5 ${m.rol === 'user' ? 'flex-row-reverse' : ''}`}>
                 {m.rol === 'assistant' && (
-                  <div className="w-7 h-7 rounded-full bg-[#1a3320] flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-7 h-7 rounded-full bg-[#1769a5] flex items-center justify-center shrink-0 mt-0.5">
                     <Bot size={14} className="text-green-300" />
                   </div>
                 )}
                 <div
                   className={`rounded-2xl text-sm max-w-[85%] leading-relaxed overflow-hidden ${
                     m.rol === 'user'
-                      ? 'bg-[#1a3320] text-white rounded-tr-sm'
+                      ? 'bg-[#1769a5] text-white rounded-tr-sm'
                       : 'bg-white text-gray-700 shadow-sm rounded-tl-sm'
                   }`}
                 >
@@ -337,7 +337,7 @@ export default function AgenteIA() {
             {/* Typing indicator */}
             {cargando && (
               <div className="flex gap-2.5">
-                <div className="w-7 h-7 rounded-full bg-[#1a3320] flex items-center justify-center shrink-0">
+                <div className="w-7 h-7 rounded-full bg-[#1769a5] flex items-center justify-center shrink-0">
                   <Bot size={14} className="text-green-300" />
                 </div>
                 <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm flex items-center gap-1.5">
@@ -433,7 +433,7 @@ export default function AgenteIA() {
               <button
                 onClick={() => enviar()}
                 disabled={(!input.trim() && !imagenPrev) || cargando}
-                className="w-10 h-10 rounded-xl bg-[#1a3320] disabled:opacity-30 hover:bg-[#254830]
+                className="w-10 h-10 rounded-xl bg-[#1769a5] disabled:opacity-30 hover:bg-[#11537f]
                   flex items-center justify-center transition-colors shrink-0"
               >
                 <Send size={15} className="text-white" />

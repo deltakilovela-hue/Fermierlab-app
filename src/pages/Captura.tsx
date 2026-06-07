@@ -213,7 +213,7 @@ export default function Captura() {
             setFilasFito(ORGANISMOS_FITO.map((o) => ({ organismo: o.nombre, medioCultivo: o.medio, conteo1: '', conteo2: '', conteo3: '' })));
             setTabla('');
           }}
-          className="bg-[#1a3320] text-white text-sm px-5 py-2.5 rounded-lg hover:bg-[#254830] transition-colors"
+          className="bg-[#1769a5] text-white text-sm px-5 py-2.5 rounded-lg hover:bg-[#11537f] transition-colors"
         >
           Registrar otro análisis
         </button>
@@ -224,7 +224,7 @@ export default function Captura() {
   return (
     <div className="p-6 max-w-3xl">
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-[#1a3320]">Captura de resultados</h1>
+        <h1 className="text-xl font-bold text-[#1769a5]">Captura de resultados</h1>
         <p className="text-sm text-gray-500">Ingresa los datos manualmente o importa directamente desde el PDF del laboratorio</p>
       </div>
 
@@ -232,7 +232,7 @@ export default function Captura() {
       <div className="bg-white rounded-xl p-5 border border-dashed border-green-300 shadow-sm mb-6">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <p className="text-sm font-semibold text-[#1a3320] flex items-center gap-2">
+            <p className="text-sm font-semibold text-[#1769a5] flex items-center gap-2">
               <FileUp size={16} className="text-green-600" />
               Importar desde PDF
             </p>
@@ -317,7 +317,7 @@ export default function Captura() {
                 onClick={() => setTipoAnalisis(t)}
                 className={`px-4 py-2 rounded-lg text-xs font-medium border transition-colors ${
                   tipoAnalisis === t
-                    ? 'bg-[#1a3320] text-white border-[#1a3320]'
+                    ? 'bg-[#1769a5] text-white border-[#1769a5]'
                     : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
                 }`}
               >
@@ -440,8 +440,8 @@ export default function Captura() {
         <button
           type="submit"
           disabled={!naveId || !tabla}
-          className="flex items-center gap-2 bg-[#1a3320] text-white px-6 py-3 rounded-xl text-sm font-medium
-            hover:bg-[#254830] transition-colors shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 bg-[#1769a5] text-white px-6 py-3 rounded-xl text-sm font-medium
+            hover:bg-[#11537f] transition-colors shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <PlusCircle size={16} />
           Guardar análisis

@@ -31,13 +31,13 @@ function StepDots({ current }: { current: number }) {
               <div
                 className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
                   past   ? 'bg-green-500 text-white' :
-                  active ? 'bg-[#1a3320] text-white' :
+                  active ? 'bg-[#1769a5] text-white' :
                            'bg-gray-100 text-gray-400'
                 }`}
               >
                 {past ? '✓' : num}
               </div>
-              <span className={`mt-1 text-[10px] font-medium ${active ? 'text-[#1a3320]' : 'text-gray-400'}`}>
+              <span className={`mt-1 text-[10px] font-medium ${active ? 'text-[#1769a5]' : 'text-gray-400'}`}>
                 {label}
               </span>
             </div>
@@ -184,7 +184,7 @@ export default function NuevoClienteWizard({ onClose }: { onClose: () => void })
         {/* ── Header ───────────────────────────────────────────────────────────── */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
           <div>
-            <h2 className="text-base font-bold text-[#1a3320]">Alta de nuevo cliente</h2>
+            <h2 className="text-base font-bold text-[#1769a5]">Alta de nuevo cliente</h2>
             {step < 4 && (
               <p className="text-xs text-gray-400 mt-0.5">
                 Completa los 3 pasos para dejar el cliente listo
@@ -377,8 +377,8 @@ export default function NuevoClienteWizard({ onClose }: { onClose: () => void })
               <div className="flex flex-col sm:flex-row gap-3 w-full max-w-xs">
                 <button
                   onClick={() => { onClose(); navigate('/mapa'); }}
-                  className="flex-1 flex items-center justify-center gap-2 bg-[#1a3320] text-white
-                    px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-[#254830] transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 bg-[#1769a5] text-white
+                    px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-[#11537f] transition-colors"
                 >
                   <Map size={15} /> Dibujar en mapa
                 </button>
@@ -419,8 +419,8 @@ export default function NuevoClienteWizard({ onClose }: { onClose: () => void })
                 (step === 1 && !canStep1) ||
                 (step === 2 && !canStep2)
               }
-              className="flex items-center gap-2 px-5 py-2 bg-[#1a3320] text-white rounded-lg
-                text-sm font-medium hover:bg-[#254830] disabled:opacity-40 transition-colors"
+              className="flex items-center gap-2 px-5 py-2 bg-[#1769a5] text-white rounded-lg
+                text-sm font-medium hover:bg-[#11537f] disabled:opacity-40 transition-colors"
             >
               {step === 3 ? 'Finalizar y guardar' : 'Siguiente'}
               <ChevronRight size={14} />

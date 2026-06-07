@@ -105,7 +105,7 @@ function AddPanel({
           placeholder="Tabla / zona (ej. Tabla 1 y 2)"
           className="w-full text-xs bg-gray-50 border border-gray-200 rounded px-2 py-1.5" />
         <button disabled={!naveId || !tabla} onClick={() => onSave(naveId, tabla)}
-          className="w-full bg-[#1a3320] text-white text-xs py-1.5 rounded-lg disabled:opacity-40 hover:bg-[#254830] transition-colors">
+          className="w-full bg-[#1769a5] text-white text-xs py-1.5 rounded-lg disabled:opacity-40 hover:bg-[#11537f] transition-colors">
           Guardar punto
         </button>
       </div>
@@ -228,7 +228,7 @@ export default function Mapa() {
       {/* ── Sidebar ──────────────────────────────────────────────────────────── */}
       <div className="w-56 bg-white border-r border-gray-100 flex flex-col z-10 shadow-sm">
         <div className="p-4 border-b border-gray-100">
-          <h1 className="text-sm font-bold text-[#1a3320]">Mapa de muestreo</h1>
+          <h1 className="text-sm font-bold text-[#1769a5]">Mapa de muestreo</h1>
           <p className="text-[11px] text-gray-400 mt-0.5">Culiacán, Sinaloa</p>
         </div>
 
@@ -240,7 +240,7 @@ export default function Mapa() {
               onClick={() => { setSidebarTab(t); cancelarDibujo(); setAddMode(false); setPendingCoords(null); }}
               className={`flex-1 py-2 font-medium transition-colors ${
                 sidebarTab === t
-                  ? 'text-[#1a3320] border-b-2 border-[#1a3320]'
+                  ? 'text-[#1769a5] border-b-2 border-[#1769a5]'
                   : 'text-gray-400 hover:text-gray-600'
               }`}
             >
@@ -330,7 +330,7 @@ export default function Mapa() {
                 className={`w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-medium transition-colors ${
                   addMode
                     ? 'bg-red-50 text-red-600 border border-red-200'
-                    : 'bg-[#1a3320] text-white hover:bg-[#254830]'
+                    : 'bg-[#1769a5] text-white hover:bg-[#11537f]'
                 }`}
               >
                 {addMode ? <><X size={13} /> Cancelar</> : <><Plus size={13} /> Agregar punto</>}
@@ -468,7 +468,7 @@ export default function Mapa() {
 
         {/* Drawing mode hint */}
         {dibujarParcelaId && (
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] bg-[#1a3320]/90 text-white text-xs px-4 py-2 rounded-full shadow-lg pointer-events-none">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] bg-[#1769a5]/90 text-white text-xs px-4 py-2 rounded-full shadow-lg pointer-events-none">
             Haz clic en el mapa para marcar los vértices · Mín. 3 puntos para finalizar
           </div>
         )}
