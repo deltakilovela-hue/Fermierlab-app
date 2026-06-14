@@ -6,6 +6,7 @@ import {
   Users, UserPlus, Trash2, Loader2, AlertCircle, Shield,
   FlaskConical, Sprout, Building2, RefreshCw, Check, X,
 } from 'lucide-react';
+import Configuracion from './Configuracion';
 
 // ── Tipos ─────────────────────────────────────────────────────────────────────
 
@@ -38,6 +39,8 @@ export default function Usuarios() {
   const [cargando, setCargando] = useState(true);
   const [error, setError]       = useState('');
   const [guardando, setGuardando] = useState(false);
+
+  const [tab, setTab] = useState<'usuarios' | 'proyectos'>('usuarios');
 
   // Form de nuevo usuario
   const [showForm, setShowForm] = useState(false);
@@ -141,23 +144,46 @@ export default function Usuarios() {
             <p className="text-xs text-gray-400">Crea, edita roles y asigna proyectos — sin salir de la app</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={cargar}
-            className="w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 transition-colors"
-            title="Recargar"
-          >
-            <RefreshCw size={15} className={cargando ? 'animate-spin' : ''} />
-          </button>
-          <button
-            onClick={() => { setShowForm((v) => !v); setError(''); }}
-            className="flex items-center gap-2 bg-[#1769a5] hover:bg-[#11537f] text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
-          >
-            <UserPlus size={16} /> Nuevo usuario
-          </button>
-        </div>
+        {tab === 'usuarios' && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={cargar}
+              className="w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 transition-colors"
+              title="Recargar"
+            >
+              <RefreshCw size={15} className={cargando ? 'animate-spin' : ''} />
+            </button>
+            <button
+              onClick={() => { setShowForm((v) => !v); setError(''); }}
+              className="flex items-center gap-2 bg-[#1769a5] hover:bg-[#11537f] text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
+            >
+              <UserPlus size={16} /> Nuevo usuario
+            </button>
+          </div>
+        )}
       </div>
 
+      {/* Pestañas: Usuarios / Proyectos */}
+      <div className="flex gap-1 bg-white border border-gray-100 rounded-xl p-1 w-fit shadow-sm mb-5">
+        {([
+          { key: 'usuarios' as const,  label: 'Usuarios',  Icon: Users },
+          { key: 'proyectos' as const, label: 'Proyectos', Icon: Building2 },
+        ]).map(({ key, label, Icon }) => (
+          <button
+            key={key}
+            onClick={() => setTab(key)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              tab === key ? 'bg-[#1769a5] text-white' : 'text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <Icon size={14} /> {label}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'proyectos' && <Configuracion embedded />}
+
+      {tab === 'usuarios' && (<>
       {/* Error */}
       {error && (
         <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-4">
@@ -305,6 +331,7 @@ export default function Usuarios() {
         💡 Para asignar <b>varios accesos al mismo proyecto</b>, crea varios usuarios con rol "Cliente" y el mismo proyecto asociado.
         Los cambios de rol aplican la próxima vez que el usuario inicie sesión.
       </p>
+      </>)}
     </div>
   );
 }

@@ -11,7 +11,7 @@ import Reportes from './pages/Reportes';
 import Captura from './pages/Captura';
 import Mapa from './pages/Mapa';
 import Comparativa from './pages/Comparativa';
-import Configuracion from './pages/Configuracion';
+import Ajustes from './pages/Ajustes';
 import Portal from './pages/Portal';
 import Fumigacion from './pages/Fumigacion';
 import AgenteChat from './pages/AgenteChat';
@@ -167,14 +167,7 @@ export default function App() {
               </OnlyAdmin>
             }
           />
-          <Route
-            path="configuracion"
-            element={
-              <OnlyAdmin>
-                <Configuracion />
-              </OnlyAdmin>
-            }
-          />
+          <Route path="configuracion" element={<Ajustes />} />
         </Route>
 
         {/* Catch-all */}

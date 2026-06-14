@@ -111,7 +111,7 @@ function ClientesTab() {
     <div className="space-y-3">
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
         {clientes.length === 0 && (
-          <div className="py-10 text-center text-sm text-gray-400">No hay clientes registrados</div>
+          <div className="py-10 text-center text-sm text-gray-400">No hay proyectos registrados</div>
         )}
         {clientes.map((c, i) => (
           <div key={c.id} className={i > 0 ? 'border-t border-gray-100' : ''}>
@@ -574,33 +574,33 @@ function NavesTab() {
 // PÁGINA PRINCIPAL
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function Configuracion() {
+export default function Configuracion({ embedded = false }: { embedded?: boolean }) {
   const { clientes, parcelas, naves } = useStore();
   const [tab, setTab] = useState<'clientes' | 'parcelas' | 'naves'>('clientes');
   const [showWizard, setShowWizard] = useState(false);
 
   const tabs = [
-    { key: 'clientes' as const, label: 'Clientes',  Icon: Building2, count: clientes.length },
+    { key: 'clientes' as const, label: 'Proyectos', Icon: Building2, count: clientes.length },
     { key: 'parcelas' as const, label: 'Parcelas',  Icon: Map,       count: parcelas.length },
     { key: 'naves'    as const, label: 'Naves',     Icon: LayoutList, count: naves.length   },
   ];
 
   return (
-    <div className="p-6 space-y-6 max-w-3xl">
+    <div className={embedded ? 'space-y-5' : 'p-6 space-y-6 max-w-3xl'}>
       {showWizard && <NuevoClienteWizard onClose={() => setShowWizard(false)} />}
 
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-[#1769a5]">Configuración</h1>
-          <p className="text-sm text-gray-500">Gestiona clientes, parcelas y naves del sistema</p>
+          {!embedded && <h1 className="text-xl font-bold text-[#1769a5]">Gestión de proyectos</h1>}
+          <p className="text-sm text-gray-500">Gestiona proyectos, parcelas y naves del sistema</p>
         </div>
         <button
           onClick={() => setShowWizard(true)}
           className="flex items-center gap-2 px-4 py-2.5 bg-[#1769a5] text-white text-sm font-medium
             rounded-xl hover:bg-[#11537f] transition-colors shadow-sm shrink-0"
         >
-          <UserPlus size={15} /> Alta de cliente
+          <UserPlus size={15} /> Alta de proyecto
         </button>
       </div>
 

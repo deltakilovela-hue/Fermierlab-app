@@ -20,7 +20,7 @@ const ALL_NAV = [
   { to: '/fumigacion',    label: 'Fumigación',     Icon: Sprout,       roles: ['admin', 'asesor', 'operador'] as Rol[] },
   { to: '/agente',        label: 'Agente IA',      Icon: Bot,          roles: ['admin', 'asesor', 'cliente', 'operador'] as Rol[] },
   { to: '/usuarios',      label: 'Usuarios',       Icon: UserCog,      roles: ['admin'] as Rol[] },
-  { to: '/configuracion', label: 'Configuración',  Icon: Settings,     roles: ['admin'] as Rol[] },
+  { to: '/configuracion', label: 'Configuración',  Icon: Settings,     roles: ['admin', 'asesor', 'cliente', 'operador'] as Rol[] },
 ];
 
 // ── Layout ─────────────────────────────────────────────────────────────────────

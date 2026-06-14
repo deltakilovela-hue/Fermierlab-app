@@ -3,6 +3,10 @@ import { createRoot } from 'react-dom/client';
 import { ClerkProvider } from '@clerk/react';
 import './index.css';
 import App from './App.tsx';
+import { applyTheme, getInitialTheme } from './hooks/useTheme';
+
+// Aplica el tema guardado antes de pintar (evita parpadeo)
+applyTheme(getInitialTheme());
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
