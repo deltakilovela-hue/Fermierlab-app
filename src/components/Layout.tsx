@@ -16,7 +16,7 @@ const ALL_NAV = [
   { to: '/comparativa',   label: 'Comparativa',    Icon: GitCompare,   roles: ['admin', 'asesor'] as Rol[] },
   { to: '/mapa',          label: 'Mapa',           Icon: Map,          roles: ['admin', 'asesor'] as Rol[] },
   { to: '/captura',       label: 'Captura',        Icon: PlusCircle,   roles: ['admin', 'asesor'] as Rol[] },
-  { to: '/portal',        label: 'Portal cliente', Icon: Users,        roles: ['admin', 'asesor', 'cliente'] as Rol[] },
+  { to: '/portal',        label: 'Portal',         Icon: Users,        roles: ['admin', 'asesor', 'cliente'] as Rol[] },
   { to: '/fumigacion',    label: 'Fumigación',     Icon: Sprout,       roles: ['admin', 'asesor', 'operador'] as Rol[] },
   { to: '/agente',        label: 'Agente IA',      Icon: Bot,          roles: ['admin', 'asesor', 'cliente', 'operador'] as Rol[] },
   { to: '/usuarios',      label: 'Usuarios',       Icon: UserCog,      roles: ['admin'] as Rol[] },

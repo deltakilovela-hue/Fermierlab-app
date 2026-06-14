@@ -145,7 +145,7 @@ export default function Reportes() {
     <div className="p-6 space-y-6">
       <div>
         <h1 className="text-xl font-bold text-[#1769a5]">Reportes por parcela</h1>
-        <p className="text-sm text-gray-500">Graficas y tablas detalladas por cliente y parcela</p>
+        <p className="text-sm text-gray-500">Graficas y tablas detalladas por proyecto y parcela</p>
       </div>
 
       {/* Filtros + Exportar */}

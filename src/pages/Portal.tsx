@@ -338,7 +338,7 @@ export default function Portal() {
           {/* Brand */}
           <div className="flex items-center gap-3 shrink-0">
             <Logo variant="dark" size={18} tagline={false} />
-            <span className="hidden sm:block text-[11px] text-white/60 border-l border-white/20 pl-3">Portal del cliente</span>
+            <span className="hidden sm:block text-[11px] text-white/60 border-l border-white/20 pl-3">Portal del proyecto</span>
           </div>
 
           {/* Cliente selector — solo visible para admin/asesor */}
@@ -393,7 +393,7 @@ export default function Portal() {
       {clientes.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 gap-3 text-gray-400">
           <Building2 size={36} />
-          <p className="text-sm">No hay clientes registrados.</p>
+          <p className="text-sm">No hay proyectos registrados.</p>
         </div>
       ) : (
         <div className="max-w-5xl mx-auto px-5 py-6 space-y-5">

@@ -18,7 +18,7 @@ function emptyParcela(): ParcelaInput { return { id: uid(), nombre: '', naves: [
 
 // ── Step indicator ────────────────────────────────────────────────────────────
 function StepDots({ current }: { current: number }) {
-  const labels = ['Cliente', 'Parcelas', 'Naves'];
+  const labels = ['Proyecto', 'Parcelas', 'Naves'];
   return (
     <div className="flex items-center gap-0 px-6 pt-5 pb-1">
       {labels.map((label, i) => {
@@ -184,10 +184,10 @@ export default function NuevoClienteWizard({ onClose }: { onClose: () => void })
         {/* ── Header ───────────────────────────────────────────────────────────── */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
           <div>
-            <h2 className="text-base font-bold text-[#1769a5]">Alta de nuevo cliente</h2>
+            <h2 className="text-base font-bold text-[#1769a5]">Alta de nuevo proyecto</h2>
             {step < 4 && (
               <p className="text-xs text-gray-400 mt-0.5">
-                Completa los 3 pasos para dejar el cliente listo
+                Completa los 3 pasos para dejar el proyecto listo
               </p>
             )}
           </div>
@@ -206,14 +206,14 @@ export default function NuevoClienteWizard({ onClose }: { onClose: () => void })
           {step === 1 && (
             <div className="space-y-4">
               <p className="text-sm text-gray-500">
-                Datos generales del cliente. El correo, teléfono o nombre de negocio
+                Datos generales del proyecto. El correo, teléfono o nombre de negocio
                 podrán usarse como identificador de acceso.
               </p>
 
               {/* Fila 1: Nombre + Cultivo */}
               <div className="grid grid-cols-2 gap-3">
                 <Field
-                  label="Nombre del cliente *"
+                  label="Nombre del proyecto *"
                   value={nombre}
                   onChange={setNombre}
                   placeholder="Juan Pérez"
@@ -257,8 +257,8 @@ export default function NuevoClienteWizard({ onClose }: { onClose: () => void })
               <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs text-blue-600 flex gap-2 items-start">
                 <span className="mt-0.5">ℹ️</span>
                 <span>
-                  El cliente podrá iniciar sesión usando su <strong>ID</strong>, nombre, negocio,
-                  correo o teléfono. Contraseña temporal: <strong>cliente2026</strong>
+                  El acceso del proyecto se crea después desde el panel de <strong>Usuarios</strong>,
+                  asignando un usuario con rol "Cliente" a este proyecto.
                 </span>
               </div>
             </div>
@@ -364,7 +364,7 @@ export default function NuevoClienteWizard({ onClose }: { onClose: () => void })
                 <CheckCircle2 size={34} className="text-green-600" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-800">¡Cliente registrado!</h3>
+                <h3 className="text-lg font-bold text-gray-800">¡Proyecto registrado!</h3>
                 <p className="text-sm text-gray-500 mt-1.5 max-w-xs">
                   <strong className="text-gray-700">{summary.nombre}</strong> quedó dado de alta
                   con {summary.nparcelas} parcela{summary.nparcelas !== 1 ? 's' : ''} y{' '}

@@ -155,7 +155,7 @@ export default function Comparativa() {
       {/* Filtros */}
       <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Sel label="Cliente" value={clienteId} onChange={(v) => { setClienteId(v); setParcelaId(''); setNaveId(''); }}>
+          <Sel label="Proyecto" value={clienteId} onChange={(v) => { setClienteId(v); setParcelaId(''); setNaveId(''); }}>
             {clientes.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
           </Sel>
           <Sel label="Parcela" value={parcelaId} onChange={(v) => { setParcelaId(v); setNaveId(''); }}>

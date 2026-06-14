@@ -130,7 +130,7 @@ export default function Dashboard() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard label="Clientes" value={clientes.length} sub="activos" />
+        <StatCard label="Proyectos" value={clientes.length} sub="activos" />
         <StatCard label="Parcelas" value={parcelas.length} sub="en monitoreo" />
         <StatCard label="Puntos de muestreo" value={totalPuntos} />
         <StatCard

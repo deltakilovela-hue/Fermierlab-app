@@ -288,7 +288,7 @@ export default function Captura() {
         <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm space-y-4">
           <h2 className="text-sm font-semibold text-gray-700 border-b border-gray-100 pb-2">Identificación</h2>
           <div className="grid grid-cols-2 gap-4">
-            <Selector label="Cliente" value={clienteId} onChange={(v) => { setClienteId(v); setParcelaId(''); setNaveId(''); }}>
+            <Selector label="Proyecto" value={clienteId} onChange={(v) => { setClienteId(v); setParcelaId(''); setNaveId(''); }}>
               {clientes.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
             </Selector>
             <Selector label="Parcela" value={parcelaId} onChange={(v) => { setParcelaId(v); setNaveId(''); }}>
