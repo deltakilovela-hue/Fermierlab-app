@@ -138,7 +138,7 @@ export default function Usuarios() {
           </div>
           <div>
             <h1 className="text-xl font-bold text-[#1769a5]">Gestión de usuarios</h1>
-            <p className="text-xs text-gray-400">Crea, edita roles y asigna clientes — sin salir de la app</p>
+            <p className="text-xs text-gray-400">Crea, edita roles y asigna proyectos — sin salir de la app</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -186,16 +186,16 @@ export default function Usuarios() {
             </div>
             {fRol === 'cliente' && (
               <div className="flex flex-col gap-1 sm:col-span-2">
-                <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Cliente asociado</label>
+                <label className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Proyecto asociado</label>
                 <select
                   value={fClienteId}
                   onChange={(e) => setFClienteId(e.target.value)}
                   className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-400"
                 >
-                  <option value="">— Seleccionar cliente —</option>
+                  <option value="">— Seleccionar proyecto —</option>
                   {clientes.map((c) => <option key={c.id} value={c.id}>{c.nombre} ({c.cultivo})</option>)}
                 </select>
-                <p className="text-[10px] text-gray-400">Puedes asignar varios usuarios al mismo cliente.</p>
+                <p className="text-[10px] text-gray-400">Puedes asignar varios usuarios al mismo proyecto.</p>
               </div>
             )}
           </div>
@@ -231,7 +231,7 @@ export default function Usuarios() {
               <tr className="bg-gray-50 text-left text-[11px] uppercase tracking-wide text-gray-400">
                 <th className="px-4 py-3 font-semibold">Usuario</th>
                 <th className="px-4 py-3 font-semibold">Rol</th>
-                <th className="px-4 py-3 font-semibold">Cliente</th>
+                <th className="px-4 py-3 font-semibold">Proyecto</th>
                 <th className="px-4 py-3 font-semibold text-right">Acciones</th>
               </tr>
             </thead>
@@ -302,7 +302,7 @@ export default function Usuarios() {
       </div>
 
       <p className="text-[11px] text-gray-400 mt-4 leading-relaxed">
-        💡 Para asignar <b>varios accesos al mismo cliente</b>, crea varios usuarios con rol "Cliente" y el mismo cliente asociado.
+        💡 Para asignar <b>varios accesos al mismo proyecto</b>, crea varios usuarios con rol "Cliente" y el mismo proyecto asociado.
         Los cambios de rol aplican la próxima vez que el usuario inicie sesión.
       </p>
     </div>
