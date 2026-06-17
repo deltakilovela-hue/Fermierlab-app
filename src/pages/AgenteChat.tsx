@@ -10,7 +10,7 @@ import type { MensajeApi } from '../utils/fermierBot';
 import {
   Bot, Send, Loader2, Sprout, AlertCircle,
   Camera, ImagePlus, Trash2, ClipboardList,
-  Plus, Search, MessageSquare, X,
+  Plus, Search, MessageSquare, X, Menu,
 } from 'lucide-react';
 
 // ── Local types ────────────────────────────────────────────────────────────────
@@ -61,12 +61,13 @@ export default function AgenteChat() {
     conversaciones, addConversacion, appendMensaje, deleteConversacion,
   } = useStore();
 
-  const [convActiva, setConvActiva] = useState<string | null>(null);
-  const [input,      setInput]      = useState('');
-  const [imagenPrev, setImagenPrev] = useState<LocalImagen | null>(null);
-  const [cargando,   setCargando]   = useState(false);
-  const [error,      setError]      = useState('');
-  const [busqueda,   setBusqueda]   = useState('');
+  const [convActiva,    setConvActiva]    = useState<string | null>(null);
+  const [input,         setInput]         = useState('');
+  const [imagenPrev,    setImagenPrev]    = useState<LocalImagen | null>(null);
+  const [cargando,      setCargando]      = useState(false);
+  const [error,         setError]         = useState('');
+  const [busqueda,      setBusqueda]      = useState('');
+  const [sidebarAbierto, setSidebarAbierto] = useState(false);
 
   const endRef   = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -246,6 +247,7 @@ export default function AgenteChat() {
     setInput('');
     quitarImagen();
     setError('');
+    setSidebarAbierto(false);
   }
 
   // ── Sidebar grouping ──────────────────────────────────────────────────────────
@@ -273,7 +275,7 @@ export default function AgenteChat() {
   // ── Render ────────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-[calc(100dvh-4rem)] md:h-screen bg-gray-50 relative overflow-hidden">
 
       {/* Hidden file input */}
       <input
@@ -285,12 +287,31 @@ export default function AgenteChat() {
         onChange={onFileChange}
       />
 
+      {/* ── Overlay móvil ────────────────────────────────────────────────────── */}
+      {sidebarAbierto && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/40 z-40"
+          onClick={() => setSidebarAbierto(false)}
+        />
+      )}
+
       {/* ── Sidebar ──────────────────────────────────────────────────────────── */}
-      <aside className="w-72 bg-[#1769a5] flex flex-col shrink-0">
+      <aside className={`
+        fixed md:relative z-50 md:z-auto top-0 left-0 h-full
+        w-72 bg-[#1769a5] flex flex-col shrink-0
+        transition-transform duration-300
+        ${sidebarAbierto ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
 
         {/* Brand + new chat */}
         <div className="px-4 pt-5 pb-3 border-b border-white/10">
           <div className="flex items-center gap-2.5 mb-4">
+            <button
+              onClick={() => setSidebarAbierto(false)}
+              className="md:hidden ml-auto w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-white/70 hover:text-white transition-colors"
+            >
+              <X size={14} />
+            </button>
             <div className="w-9 h-9 rounded-xl bg-green-500/20 flex items-center justify-center shrink-0">
               <Sprout size={18} className="text-green-300" />
             </div>
@@ -347,7 +368,7 @@ export default function AgenteChat() {
                 {grupo.items.map((conv) => (
                   <div key={conv.id} className="group relative px-2">
                     <button
-                      onClick={() => { setConvActiva(conv.id); setError(''); }}
+                      onClick={() => { setConvActiva(conv.id); setError(''); setSidebarAbierto(false); }}
                       className={`w-full text-left px-3 py-2.5 rounded-xl transition-colors flex flex-col gap-0.5 ${
                         convActiva === conv.id
                           ? 'bg-white/15 text-white'
@@ -393,8 +414,15 @@ export default function AgenteChat() {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
         {/* Header */}
-        <div className="flex items-center gap-3 px-6 py-4 bg-white border-b border-gray-100 shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-[#1769a5]/10 flex items-center justify-center">
+        <div className="flex items-center gap-3 px-4 md:px-6 py-3 md:py-4 bg-white border-b border-gray-100 shrink-0">
+          {/* Botón menú — solo móvil */}
+          <button
+            onClick={() => setSidebarAbierto(true)}
+            className="md:hidden w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-600 shrink-0"
+          >
+            <Menu size={18} />
+          </button>
+          <div className="w-9 h-9 rounded-xl bg-[#1769a5]/10 flex items-center justify-center shrink-0">
             <Bot size={18} className="text-[#1769a5]" />
           </div>
           <div className="flex-1 min-w-0">
@@ -415,7 +443,7 @@ export default function AgenteChat() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
 
           {/* Empty / welcome state */}
           {!convSeleccionada && (
@@ -527,7 +555,7 @@ export default function AgenteChat() {
         </div>
 
         {/* ── Input area ─────────────────────────────────────────────────────── */}
-        <div className="border-t border-gray-100 bg-white px-6 pt-3 pb-4 shrink-0">
+        <div className="border-t border-gray-100 bg-white px-3 md:px-6 pt-3 pb-4 shrink-0">
 
           {/* Image preview strip */}
           {imagenPrev && (

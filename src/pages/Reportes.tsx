@@ -142,14 +142,14 @@ export default function Reportes() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-[#1769a5]">Reportes por parcela</h1>
-        <p className="text-sm text-gray-500">Graficas y tablas detalladas por proyecto y parcela</p>
+        <h1 className="text-lg md:text-xl font-bold text-[#1769a5]">Reportes por parcela</h1>
+        <p className="text-xs md:text-sm text-gray-500">Gráficas y tablas detalladas por proyecto y parcela</p>
       </div>
 
       {/* Filtros + Exportar */}
-      <div className="flex flex-wrap gap-3 items-center">
+      <div className="flex flex-wrap gap-2 items-center">
         <div className="relative">
           <select
             value={clienteId}
@@ -189,7 +189,7 @@ export default function Reportes() {
         <button
           onClick={handleExport}
           disabled={exporting || detalleRows.length === 0}
-          className="ml-auto flex items-center gap-2 px-4 py-2 bg-[#1769a5] text-white text-sm font-medium rounded-lg hover:bg-[#254d30] disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+          className="w-full sm:w-auto sm:ml-auto flex items-center justify-center gap-2 px-4 py-2 bg-[#1769a5] text-white text-sm font-medium rounded-lg hover:bg-[#254d30] disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
         >
           {exporting
             ? <><Loader2 size={14} className="animate-spin" /> Generando...</>
@@ -200,14 +200,14 @@ export default function Reportes() {
 
       {/* Grafica nematodos */}
       {showNem && dataNem.some((r) => orgsNem.some((o) => r[o])) && (
-        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-2 mb-4">
+        <div className="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 mb-3">
             <FlaskConical size={15} className="text-green-700" />
-            <h2 className="text-sm font-semibold text-gray-800">
+            <h2 className="text-xs md:text-sm font-semibold text-gray-800">
               Nematodos — promedio ind/100cc por nave
             </h2>
           </div>
-          <ResponsiveContainer width="100%" height={280}>
+          <ResponsiveContainer width="100%" height={220}>
             <BarChart data={dataNem} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="nave" tick={{ fontSize: 11 }} />
@@ -227,14 +227,14 @@ export default function Reportes() {
 
       {/* Grafica fitopatogenos */}
       {showFito && dataFito.length > 0 && (
-        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-2 mb-4">
+        <div className="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 mb-3">
             <FlaskConical size={15} className="text-orange-600" />
-            <h2 className="text-sm font-semibold text-gray-800">
+            <h2 className="text-xs md:text-sm font-semibold text-gray-800">
               Fitopatogenos — UFC/g por punto de muestreo
             </h2>
           </div>
-          <ResponsiveContainer width="100%" height={280}>
+          <ResponsiveContainer width="100%" height={220}>
             <BarChart data={dataFito} margin={{ top: 5, right: 20, left: 0, bottom: 60 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="label" tick={{ fontSize: 9 }} angle={-35} textAnchor="end" interval={0} />

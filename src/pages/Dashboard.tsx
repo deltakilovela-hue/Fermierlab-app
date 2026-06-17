@@ -119,17 +119,17 @@ export default function Dashboard() {
   const puntosConAlerta = new Set(alertas.map((a) => a.nave)).size;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-bold text-[#1769a5]">Dashboard general</h1>
-        <p className="text-sm text-gray-500">
+        <h1 className="text-lg md:text-xl font-bold text-[#1769a5]">Dashboard general</h1>
+        <p className="text-xs md:text-sm text-gray-500">
           {clientes[0]?.nombre} — Muestreo Abril 2026 — Folio CLN-N-026
         </p>
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard label="Proyectos" value={clientes.length} sub="activos" />
         <StatCard label="Parcelas" value={parcelas.length} sub="en monitoreo" />
         <StatCard label="Puntos de muestreo" value={totalPuntos} />
@@ -166,22 +166,22 @@ export default function Dashboard() {
       )}
 
       {/* Gráfica nematodos */}
-      <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
-        <div className="flex items-center gap-2 mb-4">
-          <FlaskConical size={16} className="text-green-700" />
-          <h2 className="text-sm font-semibold text-gray-800">
-            Nematodos fitoparásitos por nave — ind/100cc de suelo
+      <div className="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-sm">
+        <div className="flex items-center gap-2 mb-3">
+          <FlaskConical size={15} className="text-green-700" />
+          <h2 className="text-xs md:text-sm font-semibold text-gray-800">
+            Nematodos fitoparásitos por nave — ind/100cc
           </h2>
         </div>
         <div className="flex items-center gap-3 mb-3 flex-wrap">
           {UMBRALES_NEMATODOS.map((u) => (
-            <span key={u.organismo} className="text-xs text-gray-500 flex items-center gap-1">
+            <span key={u.organismo} className="text-[10px] md:text-xs text-gray-500 flex items-center gap-1">
               <span className="inline-block w-3 h-0.5 bg-red-400 border-t-2 border-dashed border-red-400" />
               Umbral {u.organismo}: {u.valor}
             </span>
           ))}
         </div>
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={220}>
           <BarChart data={dataNematodos} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
             <XAxis dataKey="nave" tick={{ fontSize: 11 }} />
@@ -208,14 +208,14 @@ export default function Dashboard() {
       </div>
 
       {/* Gráfica fitopatógenos */}
-      <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
-        <div className="flex items-center gap-2 mb-4">
-          <FlaskConical size={16} className="text-orange-600" />
-          <h2 className="text-sm font-semibold text-gray-800">
+      <div className="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-sm">
+        <div className="flex items-center gap-2 mb-3">
+          <FlaskConical size={15} className="text-orange-600" />
+          <h2 className="text-xs md:text-sm font-semibold text-gray-800">
             Fitopatógenos — Nave 8 El Alto (Post-tratamiento) — UFC/g
           </h2>
         </div>
-        <ResponsiveContainer width="100%" height={260}>
+        <ResponsiveContainer width="100%" height={220}>
           <BarChart data={dataFito} margin={{ top: 5, right: 20, left: 0, bottom: 40 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
             <XAxis dataKey="label" tick={{ fontSize: 10 }} angle={-30} textAnchor="end" interval={0} />

@@ -1,6 +1,7 @@
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { VitePWA } from 'vite-plugin-pwa'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { handleUsers } from './api/users'
@@ -97,7 +98,39 @@ export default defineConfig(() => {
   const secretKey = readEnv('CLERK_SECRET_KEY')
 
   return {
-    plugins: [react(), tailwindcss(), devChatApi(apiKey), devUsersApi(secretKey)],
+    plugins: [
+      react(),
+      tailwindcss(),
+      devChatApi(apiKey),
+      devUsersApi(secretKey),
+      VitePWA({
+        registerType: 'autoUpdate',
+        includeAssets: ['favicon.svg', 'icons.svg'],
+        manifest: {
+          name: 'Fermier — Laboratorio Agrícola',
+          short_name: 'Fermier',
+          description: 'Captura y análisis de muestreos agrícolas en invernaderos',
+          theme_color: '#1769a5',
+          background_color: '#f1f5f1',
+          display: 'standalone',
+          orientation: 'portrait',
+          start_url: '/',
+          icons: [
+            { src: '/icons/pwa-icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' },
+          ],
+        },
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
+              handler: 'NetworkFirst',
+              options: { cacheName: 'supabase-cache', expiration: { maxEntries: 50, maxAgeSeconds: 86400 } },
+            },
+          ],
+        },
+      }),
+    ],
     server: {
       port: 5173,
       strictPort: false,

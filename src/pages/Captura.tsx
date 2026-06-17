@@ -66,7 +66,7 @@ function NumCell({ value, onChange }: { value: string; onChange: (v: string) => 
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder="0"
-      className="w-20 text-center bg-gray-50 border border-gray-300 rounded-lg px-2 py-1.5 text-sm
+      className="w-16 md:w-20 text-center bg-gray-50 border border-gray-300 rounded-lg px-1 py-1.5 text-sm
         font-medium text-gray-800 placeholder-gray-300
         focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-400 focus:bg-white
         hover:border-gray-400 transition-colors"
@@ -222,14 +222,14 @@ export default function Captura() {
   }
 
   return (
-    <div className="p-6 max-w-3xl">
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-[#1769a5]">Captura de resultados</h1>
-        <p className="text-sm text-gray-500">Ingresa los datos manualmente o importa directamente desde el PDF del laboratorio</p>
+    <div className="p-4 md:p-6 max-w-3xl">
+      <div className="mb-4 md:mb-6">
+        <h1 className="text-lg md:text-xl font-bold text-[#1769a5]">Captura de resultados</h1>
+        <p className="text-xs md:text-sm text-gray-500">Ingresa los datos manualmente o importa desde el PDF del laboratorio</p>
       </div>
 
       {/* PDF Upload section */}
-      <div className="bg-white rounded-xl p-5 border border-dashed border-green-300 shadow-sm mb-6">
+      <div className="bg-white rounded-xl p-4 border border-dashed border-green-300 shadow-sm mb-4 md:mb-6">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
             <p className="text-sm font-semibold text-[#1769a5] flex items-center gap-2">
@@ -285,9 +285,9 @@ export default function Captura() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Identificación */}
-        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm space-y-4">
+        <div className="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-sm space-y-4">
           <h2 className="text-sm font-semibold text-gray-700 border-b border-gray-100 pb-2">Identificación</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Selector label="Proyecto" value={clienteId} onChange={(v) => { setClienteId(v); setParcelaId(''); setNaveId(''); }}>
               {clientes.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
             </Selector>
@@ -328,7 +328,7 @@ export default function Captura() {
         </div>
 
         {/* Tabla de resultados */}
-        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+        <div className="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-sm">
           <h2 className="text-sm font-semibold text-gray-700 border-b border-gray-100 pb-2 mb-4">Resultados</h2>
 
           {/* Hint */}

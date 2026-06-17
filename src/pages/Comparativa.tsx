@@ -145,16 +145,16 @@ export default function Comparativa() {
   const unidad = tipo === 'nematodos' ? 'ind/100cc' : 'UFC/g';
 
   return (
-    <div className="p-6 space-y-6 max-w-5xl">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6 max-w-5xl">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-bold text-[#1769a5]">Comparativa pre/post tratamiento</h1>
-        <p className="text-sm text-gray-500">Evalúa la eficacia del tratamiento comparando los resultados antes y después</p>
+        <h1 className="text-lg md:text-xl font-bold text-[#1769a5]">Comparativa pre/post tratamiento</h1>
+        <p className="text-xs md:text-sm text-gray-500">Evalúa la eficacia del tratamiento antes y después</p>
       </div>
 
       {/* Filtros */}
       <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <Sel label="Proyecto" value={clienteId} onChange={(v) => { setClienteId(v); setParcelaId(''); setNaveId(''); }}>
             {clientes.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
           </Sel>
@@ -244,16 +244,16 @@ export default function Comparativa() {
           )}
 
           {/* Gráfica agrupada */}
-          <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
-            <h2 className="text-sm font-semibold text-gray-800 mb-1">
+          <div className="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-sm">
+            <h2 className="text-xs md:text-sm font-semibold text-gray-800 mb-1">
               Comparativa por organismo — {unidad}
             </h2>
-            <p className="text-xs text-gray-400 mb-4">Promedio de todos los puntos de muestreo de la nave</p>
+            <p className="text-[10px] md:text-xs text-gray-400 mb-3">Promedio de todos los puntos de muestreo de la nave</p>
 
             {tipo === 'nematodos' && (
-              <div className="flex flex-wrap gap-3 mb-3">
+              <div className="flex flex-wrap gap-2 mb-3">
                 {UMBRALES_NEMATODOS.filter((u) => organismos.includes(u.organismo)).map((u) => (
-                  <span key={u.organismo} className="text-xs text-gray-400 flex items-center gap-1">
+                  <span key={u.organismo} className="text-[10px] md:text-xs text-gray-400 flex items-center gap-1">
                     <span className="inline-block w-4 border-t-2 border-dashed border-red-400" />
                     Umbral {u.organismo}: {u.valor}
                   </span>
@@ -261,7 +261,7 @@ export default function Comparativa() {
               </div>
             )}
 
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={240}>
               <BarChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis dataKey="organismo" tick={{ fontSize: 11 }} />

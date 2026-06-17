@@ -8,8 +8,6 @@ import { useStore } from '../store/useStore';
 import Logo from './Logo';
 import type { Rol } from '../types';
 
-// ── Nav items por rol ─────────────────────────────────────────────────────────
-
 const ALL_NAV = [
   { to: '/',              label: 'Dashboard',      Icon: BarChart3,    roles: ['admin', 'asesor'] as Rol[] },
   { to: '/reportes',      label: 'Reportes',       Icon: FlaskConical, roles: ['admin', 'asesor'] as Rol[] },
@@ -20,10 +18,16 @@ const ALL_NAV = [
   { to: '/fumigacion',    label: 'Fumigación',     Icon: Sprout,       roles: ['admin', 'asesor', 'operador'] as Rol[] },
   { to: '/agente',        label: 'Agente IA',      Icon: Bot,          roles: ['admin', 'asesor', 'cliente', 'operador'] as Rol[] },
   { to: '/usuarios',      label: 'Usuarios',       Icon: UserCog,      roles: ['admin'] as Rol[] },
-  { to: '/configuracion', label: 'Configuración',  Icon: Settings,     roles: ['admin', 'asesor', 'cliente', 'operador'] as Rol[] },
+  { to: '/configuracion', label: 'Config',         Icon: Settings,     roles: ['admin', 'asesor', 'cliente', 'operador'] as Rol[] },
 ];
 
-// ── Layout ─────────────────────────────────────────────────────────────────────
+// En móvil solo mostramos los items más relevantes en la barra inferior (máx 5)
+const MOBILE_PRIORITY: Record<Rol, string[]> = {
+  admin:    ['/', '/captura', '/reportes', '/agente', '/configuracion'],
+  asesor:   ['/', '/captura', '/reportes', '/agente', '/configuracion'],
+  cliente:  ['/portal', '/agente', '/configuracion'],
+  operador: ['/fumigacion', '/agente', '/configuracion'],
+};
 
 export default function Layout() {
   const { sesion } = useStore();
@@ -31,6 +35,10 @@ export default function Layout() {
   if (!sesion) return <Navigate to="/login" replace />;
 
   const nav = ALL_NAV.filter((item) => item.roles.includes(sesion.rol));
+  const mobileRoutes = MOBILE_PRIORITY[sesion.rol];
+  const mobileNav = mobileRoutes
+    .map((r) => nav.find((n) => n.to === r))
+    .filter(Boolean) as typeof nav;
 
   const rolLabel: Record<Rol, string> = {
     admin:    'Administrador',
@@ -40,10 +48,10 @@ export default function Layout() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#f1f5f1]">
+    <div className="flex min-h-screen min-h-dvh bg-[#f1f5f1]">
 
-      {/* ── Sidebar ──────────────────────────────────────────────────────────── */}
-      <aside className="w-56 bg-[#1769a5] text-white flex flex-col shrink-0">
+      {/* ── Sidebar (solo desktop md+) ──────────────────────────────────────── */}
+      <aside className="hidden md:flex w-56 bg-[#1769a5] text-white flex-col shrink-0">
 
         {/* Brand */}
         <div className="px-5 py-5 border-b border-white/15">
@@ -71,10 +79,9 @@ export default function Layout() {
           ))}
         </nav>
 
-        {/* User info — UserButton de Clerk (avatar + menú de cuenta + cerrar sesión) */}
+        {/* User info */}
         <div className="px-3 py-4 border-t border-white/10">
           <div className="flex items-center gap-2.5 px-2 py-2 rounded-xl hover:bg-white/5 transition-colors">
-            {/* Avatar con menú desplegable de Clerk */}
             <UserButton
               userProfileUrl="/perfil"
               userProfileMode="navigation"
@@ -99,10 +106,57 @@ export default function Layout() {
         </div>
       </aside>
 
-      {/* ── Main content ─────────────────────────────────────────────────────── */}
-      <main className="flex-1 overflow-auto">
-        <Outlet />
+      {/* ── Contenido principal ──────────────────────────────────────────────── */}
+      <main className="flex-1 overflow-auto pb-[env(safe-area-inset-bottom)] md:pb-0">
+        {/* Header móvil */}
+        <header className="md:hidden sticky top-0 z-30 flex items-center justify-between px-4 py-3 bg-[#1769a5] text-white">
+          <Logo variant="dark" size={18} />
+          <UserButton
+            userProfileUrl="/perfil"
+            userProfileMode="navigation"
+            appearance={{
+              elements: {
+                avatarBox: 'w-8 h-8',
+                userButtonPopoverCard: 'shadow-2xl',
+                userButtonPopoverFooter: 'hidden',
+              },
+            }}
+          />
+        </header>
+
+        {/* Padding inferior en móvil para que el contenido no quede bajo la barra */}
+        <div className="pb-20 md:pb-0">
+          <Outlet />
+        </div>
       </main>
+
+      {/* ── Bottom nav bar (solo móvil) ──────────────────────────────────────── */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 flex"
+           style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+        {mobileNav.map(({ to, label, Icon }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={to === '/'}
+            className={({ isActive }) =>
+              `flex flex-col items-center justify-center gap-0.5 flex-1 py-2 text-[10px] font-medium transition-colors ${
+                isActive
+                  ? 'text-[#1769a5]'
+                  : 'text-gray-400'
+              }`
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <span className={`p-1 rounded-lg transition-colors ${isActive ? 'bg-[#1769a5]/10' : ''}`}>
+                  <Icon size={20} />
+                </span>
+                {label}
+              </>
+            )}
+          </NavLink>
+        ))}
+      </nav>
     </div>
   );
 }
