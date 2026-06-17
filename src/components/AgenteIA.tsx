@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useStore } from '../store/useStore';
 import { UMBRALES_NEMATODOS, UMBRALES_FITOPATOGENOS } from '../types';
 import type { MediaTypeChat } from '../types';
@@ -12,9 +12,9 @@ import {
 // ── Tipos ─────────────────────────────────────────────────────────────────────
 
 interface ImagenAdjunta {
-  data: string;          // base64 sin prefijo data:...
+  data: string;
   mediaType: MediaTypeChat;
-  previewUrl: string;    // object URL para mostrar en UI
+  previewUrl: string;
 }
 
 interface Mensaje {
@@ -32,6 +32,44 @@ const SUGERENCIAS = [
   { emoji: '⚠️', texto: 'Umbrales de Meloidogyne superados, ¿qué hago?', esImagen: false },
 ];
 
+// ── Hook de posición arrastrable ──────────────────────────────────────────────
+
+function useDraggable(initialBottom = 24, initialRight = 24) {
+  // Guardamos la posición como {x, y} desde la esquina inferior-derecha
+  const [pos, setPos] = useState({ x: initialRight, y: initialBottom });
+  const dragging = useRef(false);
+  const startPointer = useRef({ x: 0, y: 0 });
+  const startPos = useRef({ x: initialRight, y: initialBottom });
+
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    // Solo drag con el dedo/puntero primario; no interferir con clics normales
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
+    dragging.current = true;
+    startPointer.current = { x: e.clientX, y: e.clientY };
+    startPos.current = pos;
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    e.stopPropagation();
+  }, [pos]);
+
+  const onPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!dragging.current) return;
+    const dx = startPointer.current.x - e.clientX;
+    const dy = startPointer.current.y - e.clientY;
+
+    const newX = Math.max(8, Math.min(window.innerWidth  - 64, startPos.current.x + dx));
+    const newY = Math.max(8, Math.min(window.innerHeight - 64, startPos.current.y + dy));
+    setPos({ x: newX, y: newY });
+    e.stopPropagation();
+  }, []);
+
+  const onPointerUp = useCallback((e: React.PointerEvent) => {
+    dragging.current = false;
+    e.stopPropagation();
+  }, []);
+
+  return { pos, onPointerDown, onPointerMove, onPointerUp };
+}
+
 // ── Componente ────────────────────────────────────────────────────────────────
 
 export default function AgenteIA() {
@@ -43,17 +81,22 @@ export default function AgenteIA() {
   const [imagenPrev, setImagenPrev] = useState<ImagenAdjunta | null>(null);
   const [cargando, setCargando]     = useState(false);
   const [error, setError]           = useState('');
+  // Distingue drag de click: si el puntero se movió más de 5px, no abrimos el chat
+  const didDrag = useRef(false);
+  const pointerDownPos = useRef({ x: 0, y: 0 });
 
   const endRef   = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileRef  = useRef<HTMLInputElement>(null);
+
+  const { pos, onPointerDown, onPointerMove, onPointerUp } = useDraggable();
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [mensajes, cargando]);
   useEffect(() => { if (abierto) setTimeout(() => inputRef.current?.focus(), 100); }, [abierto]);
 
   if (!sesion) return null;
 
-  // ── Contexto dinámico con alertas de umbrales ────────────────────────────────
+  // ── Contexto dinámico ────────────────────────────────────────────────────────
   function buildContexto() {
     const lines: string[] = [`Usuario: ${sesion!.nombre} (rol: ${sesion!.rol})`];
 
@@ -68,30 +111,19 @@ export default function AgenteIA() {
       lines.push(`Clientes: ${clientes.map((c) => `${c.nombre} (${c.cultivo})`).join('; ')}`);
     }
 
-    // Detectar umbrales superados en análisis recientes
     const alertas: string[] = [];
     analisis.forEach((a) => {
       const punto = puntos.find((p) => p.id === a.puntoId);
       const nave  = punto ? naves.find((n) => n.id === punto.naveId) : null;
-
       a.resultadosNematodos?.forEach((r) => {
         const umbral = UMBRALES_NEMATODOS.find((u) => u.organismo === r.organismo);
-        if (umbral && r.individuosPor100cc > umbral.valor) {
-          alertas.push(
-            `⚠️ ${r.organismo} en ${nave?.nombre ?? 'nave desconocida'}: ` +
-            `${r.individuosPor100cc} ind/100cc (umbral: ${umbral.valor}) — SUPERADO`
-          );
-        }
+        if (umbral && r.individuosPor100cc > umbral.valor)
+          alertas.push(`⚠️ ${r.organismo} en ${nave?.nombre ?? 'nave desconocida'}: ${r.individuosPor100cc} ind/100cc (umbral: ${umbral.valor}) — SUPERADO`);
       });
-
       a.resultadosFitopatogenos?.forEach((r) => {
         const umbral = UMBRALES_FITOPATOGENOS.find((u) => u.organismo === r.organismo);
-        if (umbral && r.propagulos > umbral.valor) {
-          alertas.push(
-            `⚠️ ${r.organismo} en ${nave?.nombre ?? 'nave desconocida'}: ` +
-            `${r.propagulos.toLocaleString()} UFC/g (umbral: ${umbral.valor.toLocaleString()}) — SUPERADO`
-          );
-        }
+        if (umbral && r.propagulos > umbral.valor)
+          alertas.push(`⚠️ ${r.organismo} en ${nave?.nombre ?? 'nave desconocida'}: ${r.propagulos.toLocaleString()} UFC/g (umbral: ${umbral.valor.toLocaleString()}) — SUPERADO`);
       });
     });
 
@@ -99,23 +131,21 @@ export default function AgenteIA() {
       lines.push('\nALERTAS DE UMBRALES DETECTADAS EN EL SISTEMA:');
       alertas.forEach((a) => lines.push(a));
     }
-
     return lines.join('\n');
   }
 
-  // ── Manejo de imagen ─────────────────────────────────────────────────────────
+  // ── Imagen ───────────────────────────────────────────────────────────────────
   async function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) { setError('Solo se permiten imágenes'); return; }
     if (file.size > 5 * 1024 * 1024) { setError('Imagen demasiado grande (máx 5 MB)'); return; }
-
     const data      = await fileToBase64(file);
     const mediaType = getMediaType(file);
     const preview   = URL.createObjectURL(file);
     setImagenPrev({ data, mediaType, previewUrl: preview });
     setError('');
-    e.target.value = '';  // reset input
+    e.target.value = '';
     inputRef.current?.focus();
   }
 
@@ -124,24 +154,21 @@ export default function AgenteIA() {
     setImagenPrev(null);
   }
 
-  // ── Enviar mensaje ────────────────────────────────────────────────────────────
+  // ── Enviar ───────────────────────────────────────────────────────────────────
   async function enviar(textoForzado?: string, imagenForzada?: ImagenAdjunta) {
     const texto  = (textoForzado ?? input).trim();
     const imagen = imagenForzada ?? imagenPrev ?? undefined;
-
     if (!texto && !imagen) return;
     if (cargando) return;
 
     const nuevoMensaje: Mensaje = { rol: 'user', texto, imagen };
     const historial = [...mensajes, nuevoMensaje];
-
     setMensajes(historial);
     setInput('');
     setImagenPrev(null);
     setCargando(true);
     setError('');
 
-    // Convertir al tipo MensajeApi (sin previewUrl) para llamarClaude
     const apiMensajes: MensajeApi[] = historial.map((m) => ({
       rol:    m.rol,
       texto:  m.texto,
@@ -162,11 +189,9 @@ export default function AgenteIA() {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviar(); }
   }
 
-  // Cuando el usuario hace clic en sugerencia de foto: abre selector directamente
   function clickSugerencia(s: typeof SUGERENCIAS[0]) {
     if (s.esImagen) {
       fileRef.current?.click();
-      // Pre-cargamos el texto de análisis para que vaya con la foto
       setInput('Analiza esta imagen de mi cultivo y dime qué ves.');
     } else {
       setInput(s.texto);
@@ -174,24 +199,40 @@ export default function AgenteIA() {
     }
   }
 
-  // ── Alertas para el badge del botón flotante ─────────────────────────────────
-  const hayAlertas = analisis.some((a) => {
-    const nemOk = a.resultadosNematodos?.some((r) => {
+  const hayAlertas = analisis.some((a) =>
+    a.resultadosNematodos?.some((r) => {
       const u = UMBRALES_NEMATODOS.find((u) => u.organismo === r.organismo);
       return u && r.individuosPor100cc > u.valor;
-    });
-    const fitoOk = a.resultadosFitopatogenos?.some((r) => {
+    }) ||
+    a.resultadosFitopatogenos?.some((r) => {
       const u = UMBRALES_FITOPATOGENOS.find((u) => u.organismo === r.organismo);
       return u && r.propagulos > u.valor;
-    });
-    return nemOk || fitoOk;
-  });
+    })
+  );
+
+  // ── Handlers combinados drag + click para el botón flotante ──────────────────
+  function handleBubblePointerDown(e: React.PointerEvent) {
+    didDrag.current = false;
+    pointerDownPos.current = { x: e.clientX, y: e.clientY };
+    onPointerDown(e);
+  }
+
+  function handleBubblePointerMove(e: React.PointerEvent) {
+    const dx = Math.abs(e.clientX - pointerDownPos.current.x);
+    const dy = Math.abs(e.clientY - pointerDownPos.current.y);
+    if (dx > 5 || dy > 5) didDrag.current = true;
+    onPointerMove(e);
+  }
+
+  function handleBubblePointerUp(e: React.PointerEvent) {
+    onPointerUp(e);
+    if (!didDrag.current) setAbierto(true);
+  }
 
   // ─────────────────────────────────────────────────────────────────────────────
 
   return (
     <>
-      {/* Input oculto para selección de imagen */}
       <input
         ref={fileRef}
         type="file"
@@ -201,18 +242,20 @@ export default function AgenteIA() {
         onChange={onFileChange}
       />
 
-      {/* ── Botón flotante ─────────────────────────────────────────────────── */}
+      {/* ── Botón flotante arrastrable ──────────────────────────────────────── */}
       {!abierto && (
         <button
-          onClick={() => setAbierto(true)}
-          className="fixed bottom-6 right-6 z-[2000] w-14 h-14 rounded-full
+          onPointerDown={handleBubblePointerDown}
+          onPointerMove={handleBubblePointerMove}
+          onPointerUp={handleBubblePointerUp}
+          style={{ bottom: pos.y, right: pos.x }}
+          className="fixed z-[2000] w-14 h-14 rounded-full touch-none select-none
             bg-[#1769a5] hover:bg-[#11537f] text-white shadow-2xl shadow-green-900/40
-            flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+            flex items-center justify-center transition-shadow active:scale-95 cursor-grab active:cursor-grabbing"
           title="FermierBot — Asesor IA agrícola"
         >
-          <Sprout size={24} className="text-green-300" />
-          {/* Badge: Bot icon o alerta roja */}
-          <span className={`absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center
+          <Sprout size={24} className="text-green-300 pointer-events-none" />
+          <span className={`absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center pointer-events-none
             ${hayAlertas ? 'bg-red-500 animate-pulse' : 'bg-amber-400'}`}
           >
             {hayAlertas
@@ -223,19 +266,28 @@ export default function AgenteIA() {
         </button>
       )}
 
-      {/* ── Panel de chat ───────────────────────────────────────────────────── */}
+      {/* ── Panel de chat (posición fija, anclado a donde está la burbuja) ─── */}
       {abierto && (
         <div
-          className="fixed bottom-5 right-5 z-[2000] w-[390px] max-w-[calc(100vw-1.5rem)]
+          className="fixed z-[2000] w-[390px] max-w-[calc(100vw-1.5rem)]
             flex flex-col bg-white rounded-3xl shadow-2xl shadow-black/20 overflow-hidden"
-          style={{ height: 'min(620px, calc(100vh - 2.5rem))' }}
+          style={{
+            bottom: Math.min(pos.y, window.innerHeight - 40),
+            right:  Math.max(8, Math.min(pos.x, window.innerWidth - 48)),
+            height: 'min(620px, calc(100dvh - 2.5rem))',
+          }}
         >
-          {/* ── Header ──────────────────────────────────────────────────────── */}
-          <div className="flex items-center gap-3 px-4 py-3.5 bg-[#1769a5] text-white shrink-0">
-            <div className="w-9 h-9 rounded-xl bg-green-500/20 flex items-center justify-center">
+          {/* Header — también arrastrable para mover el panel */}
+          <div
+            onPointerDown={(e) => { onPointerDown(e); }}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            className="flex items-center gap-3 px-4 py-3.5 bg-[#1769a5] text-white shrink-0 cursor-grab active:cursor-grabbing touch-none select-none"
+          >
+            <div className="w-9 h-9 rounded-xl bg-green-500/20 flex items-center justify-center pointer-events-none">
               <Sprout size={18} className="text-green-300" />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 pointer-events-none">
               <p className="text-sm font-bold leading-tight">FermierBot</p>
               <p className="text-[10px] text-green-300 flex items-center gap-1">
                 Asesor agrícola IA
@@ -247,6 +299,7 @@ export default function AgenteIA() {
               </p>
             </div>
             <button
+              onPointerDown={(e) => e.stopPropagation()}
               onClick={() => setAbierto(false)}
               className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
             >
@@ -254,10 +307,8 @@ export default function AgenteIA() {
             </button>
           </div>
 
-          {/* ── Mensajes ────────────────────────────────────────────────────── */}
+          {/* Mensajes */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
-
-            {/* Saludo + sugerencias */}
             {mensajes.length === 0 && (
               <div className="flex gap-2.5">
                 <div className="w-7 h-7 rounded-full bg-[#1769a5] flex items-center justify-center shrink-0 mt-0.5">
@@ -266,11 +317,8 @@ export default function AgenteIA() {
                 <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm max-w-[88%]">
                   <p className="font-semibold text-[#1769a5] text-sm mb-1">¡Hola! Soy FermierBot 🌱</p>
                   <p className="text-gray-500 text-xs leading-relaxed mb-3">
-                    Pregúntame sobre tus cultivos, enfermedades o manda una foto de tu planta
-                    y te digo qué le pasa.
+                    Pregúntame sobre tus cultivos, enfermedades o manda una foto de tu planta.
                   </p>
-
-                  {/* Alerta de umbrales si hay */}
                   {hayAlertas && (
                     <div className="bg-red-50 border border-red-200 rounded-xl px-3 py-2 mb-3 flex items-start gap-2">
                       <span className="text-red-500 text-sm shrink-0">⚠️</span>
@@ -280,8 +328,6 @@ export default function AgenteIA() {
                       </p>
                     </div>
                   )}
-
-                  {/* Sugerencias rápidas */}
                   <div className="flex flex-wrap gap-1.5">
                     {SUGERENCIAS.map((s) => (
                       <button
@@ -301,7 +347,6 @@ export default function AgenteIA() {
               </div>
             )}
 
-            {/* Historial de mensajes */}
             {mensajes.map((m, i) => (
               <div key={i} className={`flex gap-2.5 ${m.rol === 'user' ? 'flex-row-reverse' : ''}`}>
                 {m.rol === 'assistant' && (
@@ -309,32 +354,21 @@ export default function AgenteIA() {
                     <Bot size={14} className="text-green-300" />
                   </div>
                 )}
-                <div
-                  className={`rounded-2xl text-sm max-w-[85%] leading-relaxed overflow-hidden ${
-                    m.rol === 'user'
-                      ? 'bg-[#1769a5] text-white rounded-tr-sm'
-                      : 'bg-white text-gray-700 shadow-sm rounded-tl-sm'
-                  }`}
-                >
-                  {/* Imagen adjunta del usuario */}
+                <div className={`rounded-2xl text-sm max-w-[85%] leading-relaxed overflow-hidden ${
+                  m.rol === 'user'
+                    ? 'bg-[#1769a5] text-white rounded-tr-sm'
+                    : 'bg-white text-gray-700 shadow-sm rounded-tl-sm'
+                }`}>
                   {m.imagen && (
-                    <img
-                      src={m.imagen.previewUrl}
-                      alt="Foto del cultivo"
-                      className="w-full max-h-48 object-cover"
-                    />
+                    <img src={m.imagen.previewUrl} alt="Foto del cultivo" className="w-full max-h-48 object-cover" />
                   )}
-                  {/* Texto (con soporte Markdown básico) */}
                   {m.texto && (
-                    <div className="px-4 py-3" style={{ whiteSpace: 'pre-wrap' }}>
-                      {m.texto}
-                    </div>
+                    <div className="px-4 py-3" style={{ whiteSpace: 'pre-wrap' }}>{m.texto}</div>
                   )}
                 </div>
               </div>
             ))}
 
-            {/* Typing indicator */}
             {cargando && (
               <div className="flex gap-2.5">
                 <div className="w-7 h-7 rounded-full bg-[#1769a5] flex items-center justify-center shrink-0">
@@ -347,7 +381,6 @@ export default function AgenteIA() {
               </div>
             )}
 
-            {/* Error */}
             {error && (
               <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-3 py-2.5 mx-1">
                 <AlertCircle size={14} className="text-red-500 shrink-0" />
@@ -358,22 +391,15 @@ export default function AgenteIA() {
             <div ref={endRef} />
           </div>
 
-          {/* ── Input area ──────────────────────────────────────────────────── */}
+          {/* Input area */}
           <div className="border-t border-gray-100 bg-white shrink-0">
-
-            {/* Preview de imagen seleccionada */}
             {imagenPrev && (
               <div className="px-3 pt-3 flex items-start gap-2">
                 <div className="relative shrink-0">
-                  <img
-                    src={imagenPrev.previewUrl}
-                    alt="Vista previa"
-                    className="w-16 h-16 rounded-xl object-cover border border-gray-200"
-                  />
+                  <img src={imagenPrev.previewUrl} alt="Vista previa" className="w-16 h-16 rounded-xl object-cover border border-gray-200" />
                   <button
                     onClick={quitarImagen}
-                    className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 hover:bg-red-600
-                      rounded-full flex items-center justify-center transition-colors"
+                    className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors"
                   >
                     <Trash2 size={10} className="text-white" />
                   </button>
@@ -385,23 +411,18 @@ export default function AgenteIA() {
               </div>
             )}
 
-            {/* Campo de texto + botones */}
             <div className="px-3 py-3 flex items-end gap-2">
-              {/* Botón de cámara/imagen */}
               <button
                 onClick={() => fileRef.current?.click()}
                 disabled={cargando}
                 title="Adjuntar foto de cultivo"
                 className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors shrink-0 ${
-                  imagenPrev
-                    ? 'bg-blue-100 text-blue-600'
-                    : 'bg-gray-100 hover:bg-gray-200 text-gray-500'
+                  imagenPrev ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 hover:bg-gray-200 text-gray-500'
                 }`}
               >
                 {imagenPrev ? <ImagePlus size={17} /> : <Camera size={17} />}
               </button>
 
-              {/* Botón plan de tratamiento rápido */}
               <button
                 onClick={() => {
                   setInput('Genera un plan de tratamiento completo basándote en los umbrales superados en el sistema.');
@@ -416,7 +437,6 @@ export default function AgenteIA() {
                 <ClipboardList size={17} />
               </button>
 
-              {/* Input de texto */}
               <div className="flex-1 flex items-center gap-2 bg-gray-100 rounded-2xl px-3 py-2.5 min-h-[40px]">
                 <input
                   ref={inputRef}
@@ -429,7 +449,6 @@ export default function AgenteIA() {
                 />
               </div>
 
-              {/* Botón enviar */}
               <button
                 onClick={() => enviar()}
                 disabled={(!input.trim() && !imagenPrev) || cargando}
