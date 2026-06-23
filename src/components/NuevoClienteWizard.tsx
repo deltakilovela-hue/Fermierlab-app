@@ -211,7 +211,7 @@ export default function NuevoClienteWizard({ onClose }: { onClose: () => void })
               </p>
 
               {/* Fila 1: Nombre + Cultivo */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Field
                   label="Nombre del proyecto *"
                   value={nombre}
@@ -236,7 +236,7 @@ export default function NuevoClienteWizard({ onClose }: { onClose: () => void })
               />
 
               {/* Fila 3: Correo + Teléfono */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Field
                   label="Correo electrónico"
                   value={correo}

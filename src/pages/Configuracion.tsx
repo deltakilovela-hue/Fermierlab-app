@@ -117,16 +117,12 @@ function ClientesTab() {
           <div key={c.id} className={i > 0 ? 'border-t border-gray-100' : ''}>
 
             {editId === c.id ? (
-              <div className="p-4 bg-green-50/40">
-                <div className="flex flex-wrap gap-3 items-end">
-                  <div className="flex-1 min-w-40">
-                    <Field label="Nombre *" value={editNombre} onChange={setEditNombre} placeholder="Agrícola..." />
-                  </div>
-                  <div className="flex-1 min-w-40">
-                    <Field label="Cultivo" value={editCultivo} onChange={setEditCultivo} placeholder="Tomate, Chile..." />
-                  </div>
-                  <Btns onSave={saveEdit} onCancel={() => setEditId(null)} />
+              <div className="p-4 bg-green-50/40 space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Field label="Nombre *" value={editNombre} onChange={setEditNombre} placeholder="Agrícola..." />
+                  <Field label="Cultivo" value={editCultivo} onChange={setEditCultivo} placeholder="Tomate, Chile..." />
                 </div>
+                <Btns onSave={saveEdit} onCancel={() => setEditId(null)} />
               </div>
 
             ) : deleteConfirm === c.id ? (
@@ -156,29 +152,26 @@ function ClientesTab() {
               </div>
 
             ) : (
-              <div className="flex items-center gap-4 px-5 py-3.5 group hover:bg-gray-50/50">
+              <div className="flex items-center gap-3 px-4 py-3.5">
                 <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
                   <Building2 size={14} className="text-green-700" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-sm text-gray-800">{c.nombre}</p>
-                  <p className="text-xs text-gray-400">{c.cultivo || 'Sin cultivo especificado'}</p>
+                  <p className="text-xs text-gray-400">{c.cultivo || 'Sin cultivo'} · {countParcelas(c.id)} parcela{countParcelas(c.id) !== 1 ? 's' : ''}</p>
                 </div>
-                <span className="text-[11px] text-gray-400 shrink-0">
-                  {countParcelas(c.id)} parcela{countParcelas(c.id) !== 1 ? 's' : ''}
-                </span>
-                <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex gap-1.5 shrink-0">
                   <button
                     onClick={() => startEdit(c)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 text-xs text-gray-600 border border-gray-200 rounded-lg hover:bg-white"
+                    className="w-8 h-8 flex items-center justify-center text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-50 active:bg-gray-100"
                   >
-                    <Pencil size={11} /> Editar
+                    <Pencil size={13} />
                   </button>
                   <button
                     onClick={() => setDeleteConfirm(c.id)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 text-xs text-red-400 border border-red-100 rounded-lg hover:bg-red-50"
+                    className="w-8 h-8 flex items-center justify-center text-red-400 border border-red-100 rounded-lg hover:bg-red-50 active:bg-red-100"
                   >
-                    <Trash2 size={11} />
+                    <Trash2 size={13} />
                   </button>
                 </div>
               </div>
@@ -188,20 +181,16 @@ function ClientesTab() {
       </div>
 
       {adding ? (
-        <div className="bg-white rounded-xl border border-green-200 shadow-sm p-4">
-          <p className="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wide">Nuevo cliente</p>
-          <div className="flex flex-wrap gap-3 items-end">
-            <div className="flex-1 min-w-40">
-              <Field label="Nombre *" value={newNombre} onChange={setNewNombre} placeholder="Agrícola El Rancho" />
-            </div>
-            <div className="flex-1 min-w-40">
-              <Field label="Cultivo" value={newCultivo} onChange={setNewCultivo} placeholder="Tomate, Chile..." />
-            </div>
-            <Btns
-              onSave={handleAdd}
-              onCancel={() => { setAdding(false); setNewNombre(''); setNewCultivo(''); }}
-            />
+        <div className="bg-white rounded-xl border border-green-200 shadow-sm p-4 space-y-3">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Nuevo cliente</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Field label="Nombre *" value={newNombre} onChange={setNewNombre} placeholder="Agrícola El Rancho" />
+            <Field label="Cultivo" value={newCultivo} onChange={setNewCultivo} placeholder="Tomate, Chile..." />
           </div>
+          <Btns
+            onSave={handleAdd}
+            onCancel={() => { setAdding(false); setNewNombre(''); setNewCultivo(''); }}
+          />
         </div>
       ) : (
         <button
@@ -287,16 +276,12 @@ function ParcelasTab() {
           <div key={p.id} className={i > 0 ? 'border-t border-gray-100' : ''}>
 
             {editId === p.id ? (
-              <div className="p-4 bg-green-50/40">
-                <div className="flex flex-wrap gap-3 items-end">
-                  <div className="flex-1 min-w-40">
-                    <Field label="Nombre *" value={editNombre} onChange={setEditNombre} />
-                  </div>
-                  <div className="flex-1 min-w-40">
-                    <SelectField label="Cliente *" value={editClienteId} onChange={setEditClienteId} options={clienteOptions} />
-                  </div>
-                  <Btns onSave={saveEdit} onCancel={() => setEditId(null)} />
+              <div className="p-4 bg-green-50/40 space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Field label="Nombre *" value={editNombre} onChange={setEditNombre} />
+                  <SelectField label="Cliente *" value={editClienteId} onChange={setEditClienteId} options={clienteOptions} />
                 </div>
+                <Btns onSave={saveEdit} onCancel={() => setEditId(null)} />
               </div>
 
             ) : deleteConfirm === p.id ? (
@@ -323,29 +308,26 @@ function ParcelasTab() {
               </div>
 
             ) : (
-              <div className="flex items-center gap-4 px-5 py-3.5 group hover:bg-gray-50/50">
+              <div className="flex items-center gap-3 px-4 py-3.5">
                 <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
                   <Map size={14} className="text-blue-600" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-sm text-gray-800">{p.nombre}</p>
-                  <p className="text-xs text-gray-400">{clienteNombre(p.clienteId)}</p>
+                  <p className="text-xs text-gray-400">{clienteNombre(p.clienteId)} · {countNaves(p.id)} nave{countNaves(p.id) !== 1 ? 's' : ''}</p>
                 </div>
-                <span className="text-[11px] text-gray-400 shrink-0">
-                  {countNaves(p.id)} nave{countNaves(p.id) !== 1 ? 's' : ''}
-                </span>
-                <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex gap-1.5 shrink-0">
                   <button
                     onClick={() => startEdit(p)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 text-xs text-gray-600 border border-gray-200 rounded-lg hover:bg-white"
+                    className="w-8 h-8 flex items-center justify-center text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-50 active:bg-gray-100"
                   >
-                    <Pencil size={11} /> Editar
+                    <Pencil size={13} />
                   </button>
                   <button
                     onClick={() => setDeleteConfirm(p.id)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 text-xs text-red-400 border border-red-100 rounded-lg hover:bg-red-50"
+                    className="w-8 h-8 flex items-center justify-center text-red-400 border border-red-100 rounded-lg hover:bg-red-50 active:bg-red-100"
                   >
-                    <Trash2 size={11} />
+                    <Trash2 size={13} />
                   </button>
                 </div>
               </div>
@@ -355,20 +337,16 @@ function ParcelasTab() {
       </div>
 
       {adding ? (
-        <div className="bg-white rounded-xl border border-green-200 shadow-sm p-4">
-          <p className="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wide">Nueva parcela</p>
-          <div className="flex flex-wrap gap-3 items-end">
-            <div className="flex-1 min-w-40">
-              <Field label="Nombre *" value={newNombre} onChange={setNewNombre} placeholder="El Bajío 3..." />
-            </div>
-            <div className="flex-1 min-w-40">
-              <SelectField label="Cliente *" value={newClienteId} onChange={setNewClienteId} options={clienteOptions} />
-            </div>
-            <Btns
-              onSave={handleAdd}
-              onCancel={() => { setAdding(false); setNewNombre(''); }}
-            />
+        <div className="bg-white rounded-xl border border-green-200 shadow-sm p-4 space-y-3">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Nueva parcela</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Field label="Nombre *" value={newNombre} onChange={setNewNombre} placeholder="El Bajío 3..." />
+            <SelectField label="Cliente *" value={newClienteId} onChange={setNewClienteId} options={clienteOptions} />
           </div>
+          <Btns
+            onSave={handleAdd}
+            onCancel={() => { setAdding(false); setNewNombre(''); }}
+          />
         </div>
       ) : (
         <button
@@ -469,19 +447,15 @@ function NavesTab() {
           <div key={n.id} className={i > 0 ? 'border-t border-gray-100' : ''}>
 
             {editId === n.id ? (
-              <div className="p-4 bg-green-50/40">
-                <div className="flex flex-wrap gap-3 items-end">
-                  <div className="w-24">
-                    <Field label="Número" value={editData.numero} onChange={(v) => setEditData((d) => ({ ...d, numero: v }))} placeholder="7" />
-                  </div>
-                  <div className="flex-1 min-w-36">
-                    <Field label="Nombre *" value={editData.nombre} onChange={(v) => setEditData((d) => ({ ...d, nombre: v }))} placeholder="Nave 7" />
-                  </div>
-                  <div className="flex-1 min-w-40">
+              <div className="p-4 bg-green-50/40 space-y-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <Field label="Número" value={editData.numero} onChange={(v) => setEditData((d) => ({ ...d, numero: v }))} placeholder="7" />
+                  <Field label="Nombre *" value={editData.nombre} onChange={(v) => setEditData((d) => ({ ...d, nombre: v }))} placeholder="Nave 7" />
+                  <div className="col-span-2 sm:col-span-1">
                     <SelectField label="Parcela *" value={editData.parcelaId} onChange={(v) => setEditData((d) => ({ ...d, parcelaId: v }))} options={parcelaOptions} />
                   </div>
-                  <Btns onSave={saveEdit} onCancel={() => setEditId(null)} />
                 </div>
+                <Btns onSave={saveEdit} onCancel={() => setEditId(null)} />
               </div>
 
             ) : deleteConfirm === n.id ? (
@@ -508,29 +482,26 @@ function NavesTab() {
               </div>
 
             ) : (
-              <div className="flex items-center gap-4 px-5 py-3.5 group hover:bg-gray-50/50">
+              <div className="flex items-center gap-3 px-4 py-3.5">
                 <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0 text-xs font-bold text-amber-700">
                   {n.numero || '—'}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-sm text-gray-800">{n.nombre}</p>
-                  <p className="text-xs text-gray-400">{parcelaNombre(n.parcelaId)}</p>
+                  <p className="text-xs text-gray-400 truncate">{parcelaNombre(n.parcelaId)} · {countPuntos(n.id)} punto{countPuntos(n.id) !== 1 ? 's' : ''}</p>
                 </div>
-                <span className="text-[11px] text-gray-400 shrink-0">
-                  {countPuntos(n.id)} punto{countPuntos(n.id) !== 1 ? 's' : ''}
-                </span>
-                <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex gap-1.5 shrink-0">
                   <button
                     onClick={() => startEdit(n)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 text-xs text-gray-600 border border-gray-200 rounded-lg hover:bg-white"
+                    className="w-8 h-8 flex items-center justify-center text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-50 active:bg-gray-100"
                   >
-                    <Pencil size={11} /> Editar
+                    <Pencil size={13} />
                   </button>
                   <button
                     onClick={() => setDeleteConfirm(n.id)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 text-xs text-red-400 border border-red-100 rounded-lg hover:bg-red-50"
+                    className="w-8 h-8 flex items-center justify-center text-red-400 border border-red-100 rounded-lg hover:bg-red-50 active:bg-red-100"
                   >
-                    <Trash2 size={11} />
+                    <Trash2 size={13} />
                   </button>
                 </div>
               </div>
@@ -540,23 +511,19 @@ function NavesTab() {
       </div>
 
       {adding ? (
-        <div className="bg-white rounded-xl border border-green-200 shadow-sm p-4">
-          <p className="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wide">Nueva nave</p>
-          <div className="flex flex-wrap gap-3 items-end">
-            <div className="w-24">
-              <Field label="Número" value={newData.numero} onChange={(v) => setNewData((d) => ({ ...d, numero: v }))} placeholder="13" />
-            </div>
-            <div className="flex-1 min-w-36">
-              <Field label="Nombre *" value={newData.nombre} onChange={(v) => setNewData((d) => ({ ...d, nombre: v }))} placeholder="Nave 13" />
-            </div>
-            <div className="flex-1 min-w-40">
+        <div className="bg-white rounded-xl border border-green-200 shadow-sm p-4 space-y-3">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Nueva nave</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <Field label="Número" value={newData.numero} onChange={(v) => setNewData((d) => ({ ...d, numero: v }))} placeholder="13" />
+            <Field label="Nombre *" value={newData.nombre} onChange={(v) => setNewData((d) => ({ ...d, nombre: v }))} placeholder="Nave 13" />
+            <div className="col-span-2 sm:col-span-1">
               <SelectField label="Parcela *" value={newData.parcelaId} onChange={(v) => setNewData((d) => ({ ...d, parcelaId: v }))} options={parcelaOptions} />
             </div>
-            <Btns
-              onSave={handleAdd}
-              onCancel={() => { setAdding(false); setNewData((d) => ({ nombre: '', numero: '', parcelaId: d.parcelaId })); }}
-            />
           </div>
+          <Btns
+            onSave={handleAdd}
+            onCancel={() => { setAdding(false); setNewData((d) => ({ nombre: '', numero: '', parcelaId: d.parcelaId })); }}
+          />
         </div>
       ) : (
         <button
@@ -586,31 +553,33 @@ export default function Configuracion({ embedded = false }: { embedded?: boolean
   ];
 
   return (
-    <div className={embedded ? 'space-y-5' : 'p-6 space-y-6 max-w-3xl'}>
+    <div className={embedded ? 'space-y-5' : 'p-4 md:p-6 space-y-4 md:space-y-6 max-w-3xl'}>
       {showWizard && <NuevoClienteWizard onClose={() => setShowWizard(false)} />}
 
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          {!embedded && <h1 className="text-xl font-bold text-[#1769a5]">Gestión de proyectos</h1>}
-          <p className="text-sm text-gray-500">Gestiona proyectos, parcelas y naves del sistema</p>
+          {!embedded && <h1 className="text-lg md:text-xl font-bold text-[#1769a5]">Gestión de proyectos</h1>}
+          <p className="text-xs md:text-sm text-gray-500">Gestiona proyectos, parcelas y naves del sistema</p>
         </div>
         <button
           onClick={() => setShowWizard(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#1769a5] text-white text-sm font-medium
+          className="flex items-center gap-2 px-3 md:px-4 py-2.5 bg-[#1769a5] text-white text-sm font-medium
             rounded-xl hover:bg-[#11537f] transition-colors shadow-sm shrink-0"
         >
-          <UserPlus size={15} /> Alta de proyecto
+          <UserPlus size={15} />
+          <span className="hidden sm:inline">Alta de proyecto</span>
+          <span className="sm:hidden">Nuevo</span>
         </button>
       </div>
 
-      {/* Tab pills */}
-      <div className="flex gap-1 bg-white border border-gray-100 rounded-xl p-1 w-fit shadow-sm">
+      {/* Tab pills — full width on mobile */}
+      <div className="flex gap-1 bg-white border border-gray-100 rounded-xl p-1 shadow-sm">
         {tabs.map(({ key, label, Icon, count }) => (
           <button
             key={key}
             onClick={() => setTab(key)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-1.5 px-2 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-colors ${
               tab === key
                 ? 'bg-[#1769a5] text-white'
                 : 'text-gray-600 hover:bg-gray-50'
